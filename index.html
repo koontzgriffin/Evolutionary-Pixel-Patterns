@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #canvasContainer {
+            position: relative;
+        }
+
+        canvas {
+            border: 1px solid #ddd; /* Optional: Add a border to the canvas */
+        }
+
+        button {
+            margin-top: 10px;
+        }
+    </style>
+    <title>Centered Canvas with Buttons</title>
+</head>
+<body>
+    <h1>Pattern Generator 9000</h1>
+    <div id="canvasContainer">
+        <canvas id="gridCanvas"></canvas>
+        <br>
+        <button onclick="generateHandler()">Generate</button>
+        <button onclick="clearHandler()">Clear</button>
+        <button onclick="checkConstraintsHandler()">Check Conflicts</button>
+    </div>
+<script src="good_script.js"></script>
+
+</body>
+</html>

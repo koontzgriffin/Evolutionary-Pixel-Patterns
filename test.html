@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Change to row for side-by-side layout */
+            text-align: center;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .flex-item {
+            flex: 1; /* Equal distribution of space */
+            border: 1px solid #ddd; /* Optional: Add a border for visibility */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #canvasContainer {
+            flex: 1; /* Take up remaining space */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            border: 5px solid #ddd; /* Optional: Add a border to the canvas */
+        }
+
+        .sidePanel {
+            /*width: 200px; /* Adjust the width as needed */
+            display: flex;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #f0f0f0; /* Optional: Add a background color */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .constraints {
+            text-align: left; /* Align items to the left */
+            width: 100%;
+            margin-top: 5px; /* Optional: Add some top margin for spacing */
+        }
+
+        .constraints h3 {
+            margin-bottom: 10px; /* Optional: Add bottom margin to the heading for spacing */
+        }
+
+        /* Optional: Style for checkboxes */
+        .constraints label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .parameters {
+            text-align: left; /* Align items to the left */
+            width: 100%;
+            margin-top: 5px; /* Optional: Add some top margin for spacing */
+        }
+
+        .parameters h3 {
+            margin-bottom: 10px; /* Optional: Add bottom margin to the heading for spacing */
+        }
+
+        /* Optional: Style for checkboxes */
+        .parameters label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        /* Responsive layout - makes a one column layout instead of a two-column layout */
+        @media (max-width: 1100px) {
+            .flex-container {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+    <title>Centered Canvas with Side Panel</title>
+</head>
+<body>
+    <h1>Pattern Generator</h1>
+    <div class="flex-container">
+        <div class="flex-item">
+            <p>Welcome to the Genetic Pattern Generator! 
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat optio neque architecto et tempore odio, 
+                quas possimus at sunt exercitationem saepe nihil eos cupiditate eum dolor error doloribus id repudiandae?</p>
+        </div>
+        <div class="flex-item">
+            <div id="canvasContainer">
+                
+                <canvas id="gridCanvas"></canvas>
+                <br>
+                <div>
+                    <button onclick="randomHandler()">Random</button>
+                    <button onclick="clearHandler()">Clear</button>
+                    <button onclick="checkConstraintsHandler()">Check Conflicts</button>    
+                </div>
+                
+            </div>
+        </div>
+        <div class="flex-item">
+            <!-- Side Panel -->
+            <div class="sidePanel">
+                <h2>Settings</h2>
+                <div class="constraints">
+                    <h3><u>Constraints:</u></h3>
+                    <label for="checkbox1">
+                        <input type="checkbox" id="checkbox1"> <b> Acyclic Active Regions</b> - all active regions must be <a href="#">acyclic</a>.
+                    </label>
+    
+                    <label for="checkbox2">
+                        <input type="checkbox" id="checkbox2"> <b>Restrict Inactive Regions</b> - <a href="#">view and edit allowed neighborhoods</a>
+                    </label>
+                </div>
+                <div class="parameters">
+                    <h3><u>Parameters</u></h2>
+
+                    <label for="checkbox3">
+                        <input type="checkbox" id="borderToggle" checked> Show cell borders
+                    </label>
+                    
+                    <label for="colorPicker">Active Color:
+                        <input type="color" id="colorPickerActive" name="colorPickerActive" value="#000000">
+                    </label>
+
+                    <label for="colorPicker">Inactive Color:
+                        <input type="color" id="colorPickerInactive" name="colorPickerInactive" value="#ffffff">
+                    </label>
+
+                    <label for="integerField1">Columns: 
+                        <input type="number" id="integerField1" name="integerField1" value="0">
+                    </label>
+                    
+
+                    <label for="integerField2">Max Iterations:
+                        <input type="number" id="integerField2" name="integerField2" value="0">
+                    </label>
+                    
+
+                    <label for="integerField3">Population Size:
+                        <input type="number" id="integerField3" name="integerField3" value="0">
+                    </label>
+                </div>
+                
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="good_script.js"></script>
+</body>
+</html>
