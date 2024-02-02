@@ -316,7 +316,7 @@ let rows = 30;
 //////////////////////
 // Canvas Constants //
 //////////////////////
-const cellSize = canvasWidth/columns; // You can adjust this size as needed
+let cellSize = canvasWidth/columns; // You can adjust this size as needed
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = canvasWidth;
@@ -326,11 +326,19 @@ let activeColor = '#000000'
 let inactiveColor = '#ffffff'
 let showBorders = true;
 
+////////////////////////////
+// Genetic Algo Constants //
+////////////////////////////
+
+let populationSize = 1000;
+let maxIterations = 1000;
+let constraints = [];
+
 /////////////
 // Objects //
 /////////////
 
-const mainGrid = new Grid(rows, columns);
+let mainGrid = new Grid(rows, columns);
 
 //////////////////////
 // Helper Functions //
@@ -465,8 +473,6 @@ function acyclicConstraint(grid){
     return true;
 }
 
-
-
 ///////////////////////
 // Genetic Algo ///////
 ///////////////////////
@@ -541,6 +547,11 @@ function checkConstraintsHandler(){
     }
 }
 
+function generateHandler(){
+    const result = geneticAlgorithm(rows, columns, populationSize, maxIterations, constraints);
+
+}
+
 //////////////////////////
 // Event Handlers ////////
 //////////////////////////
@@ -567,6 +578,25 @@ borderToggle.addEventListener('change', function() {
 });
 
 // fields
+
+const columnsInput = document.getElementById('columns');
+columnsInput.addEventListener('input', function() {
+    columns = parseInt(this.value, 10); // Parse the value as an integer
+    rows = columns;
+    cellSize = canvasWidth/columns;
+    mainGrid = new Grid(rows, columns);
+    drawGrid(mainGrid, showBorders);
+});
+
+const maxIterationsInput = document.getElementById('maxIterations');
+maxIterationsInput.addEventListener('input', function() {
+    maxIterations = parseInt(this.value, 10); // Parse the value as an integer
+});
+
+const populationSizeInput = document.getElementById('populationSize');
+populationSizeInput.addEventListener('input', function() {
+    populationSize = parseInt(this.value, 10); // Parse the value as an integer
+});
 
 ////////////////////////
 // RUN TIME ////////////

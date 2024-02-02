@@ -84,6 +84,10 @@
             margin-top: 10px;
         }
 
+        .errors {
+            text-align: left;
+        }
+
         /* Responsive layout - makes a one column layout instead of a two-column layout */
         @media (max-width: 1100px) {
             .flex-container {
@@ -109,8 +113,10 @@
                 <br>
                 <div>
                     <button onclick="randomHandler()">Random</button>
+                    <button onclick="generateHandler()">Generate</button>
                     <button onclick="clearHandler()">Clear</button>
-                    <button onclick="checkConstraintsHandler()">Check Conflicts</button>    
+                    <button onclick="checkConstraintsHandler()">Check Conflicts</button>
+                        
                 </div>
                 
             </div>
@@ -126,7 +132,7 @@
                     </label>
     
                     <label for="checkbox2">
-                        <input type="checkbox" id="checkbox2"> <b>Restrict Inactive Regions</b> - <a href="#">view and edit allowed neighborhoods</a>
+                        <input type="checkbox" id="checkbox2"> <b>Restrict Inactive Regions</b> - <a href="./combos.html">view and edit allowed neighborhoods</a>
                     </label>
                 </div>
                 <div class="parameters">
@@ -144,22 +150,25 @@
                         <input type="color" id="colorPickerInactive" name="colorPickerInactive" value="#ffffff">
                     </label>
 
-                    <label for="integerField1">Columns: 
-                        <input type="number" id="integerField1" name="integerField1" value="0">
+                    <label for="columns">Columns: 
+                        <input type="number" id="columns" name="columns" value="30">
                     </label>
-                    
 
-                    <label for="integerField2">Max Iterations:
-                        <input type="number" id="integerField2" name="integerField2" value="0">
+                    <label for="maxIterations">Max Iterations:
+                        <input type="number" id="maxIterations" name="maxIterations" value="1000">
                     </label>
-                    
 
-                    <label for="integerField3">Population Size:
-                        <input type="number" id="integerField3" name="integerField3" value="0">
+                    <label for="populationSize">Population Size:
+                        <input type="number" id="populationSize" name="populationSize" value="1000">
                     </label>
                 </div>
-                
             </div>
+            <div class="errors">
+                <div id="errorContainer" style="color: red; display: none;">
+                    <p id="errorMessage">! - There is an error.</p>
+                </div>
+            </div>
+            
         </div>
 
 
