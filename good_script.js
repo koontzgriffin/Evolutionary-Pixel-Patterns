@@ -136,9 +136,9 @@ class Grid {
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.columns; j++) {
                 const index = i * this.columns + j;
-                const value = data[index];
+                const cell = data[index];
                 
-                if (value === 1) {
+                if (cell.active) {
                     this.activateCell(i, j);
                 } else {
                     this.deactivateCell(i, j);
@@ -176,21 +176,23 @@ class Individual extends Grid {
         this.constraints = constraints;
         // fill randomly
         this.randomPattern();
-        // update fitness
-        this.fitness = this.updateFitness();
+        // instantiate and update fitness
+        this.fitness;
+        this.updateFitness();
     }
 
     updateFitness(){
         // updates the fitness score of an individual
         this.fitness = 0; // set fitness to zero and subtract for conflicts
-        let visited_global = Array.from({ length: grid.columns }, () => Array(grid.rows).fill(false));
-
         // iterate through all cells
         for(let y = 0; y < rows; y++){
             for(let x = 0; x < columns; x++){
                 // run each constraint on each cell
                 for(let constraint of this.constraints){
-                    const result = constraint.run(this.grid);
+                    const satisfied = constraint.evaluate(this.getCell(x, y), this);
+                    if(!satisfied){
+                        this.fitness -= 1;
+                    }
                 }
             }
         }
@@ -203,9 +205,12 @@ class Individual extends Grid {
         // random split
         const split = getRandomInt(0, this.rows * this.columns);
         // set the childs grid based on a combination of the mates
-        child.fillFromArray(this.grid.flat().slice(0, split).concat(mate.grid.flat().slice(split)));
+        const genomeA = this.grid.flat();
+        const genomeB = mate.grid.flat();
+        const genome_child = genomeA.slice(0, split).concat(genomeB.slice(split))
+        child.fillFromArray(genome_child);
         // mutate the child
-        child.mutate();
+        child.mutate(mutationRate);
         // update fitness
         child.updateFitness();
 
@@ -273,12 +278,13 @@ class Population {
         for (let i = 0; i < this.size; i++) {
             accumulatedFitness += this.individuals[i].fitness;
 
-            if (accumulatedFitness >= randomValue) {
+            if (accumulatedFitness <= randomValue) {
                 return this.individuals[i];
             }
         }
 
         // Should not reach here, but return null if it does
+        console.log("Error with random selection. Returning Null.")
         return null;
     }
 
@@ -302,6 +308,68 @@ class Population {
         // adds an individual to the population and updates the size
         this.individuals.push(individual);
         this.size += 1;
+    }
+}
+
+class Constraint {
+    // Common implementation for all constraints.
+    constructor() {
+    }
+
+    evaluate(cell, individual) {
+        // an empty evaluate function that is always satisfied. takes a cell and an individual.
+        return true;
+    }
+
+    reset(){
+    }
+}
+
+class AcyclicConstraint extends Constraint {
+    constructor(){
+        super();
+        this.name = "Acyclic Constraint";
+        this.visited_global = Array.from({ length: columns }, () => Array(rows).fill(false));
+    }
+
+    evaluate(cell, individual){
+        // checks if an active region starting from "cell" is acyclic
+        // returns true if the constraint is satisfied, false if conflicted
+        if(!cell.active || this.visited_global[cell.x][cell.y]){
+            // constraint only relevant on active cells and cells that havent been a part of a previous region.
+            return true;
+        }
+        let visited = Array.from({ length: individual.columns }, () => Array(individual.rows).fill(false));
+        // if position is active, then check if the region is cyclic
+        if(this.isCyclic(individual, cell, visited, null)){
+            return false;
+        }
+        
+        return true;
+    }
+
+    isCyclic(grid, cur, visited, parent){
+        // Recursive function to check if an active region is cyclic. returns true if cyclic
+        visited[cur.x][cur.y] = true;
+        this.visited_global[cur.x][cur.y] = true;
+        
+        for(const adjacent of grid.getAdjacentCells(cur.x, cur.y)){
+            if(!visited[adjacent.x][adjacent.y]){
+              // if adjacent not visited, then recurse
+              if(this.isCyclic(grid, adjacent, visited, cur)){
+                return true;
+              }
+            }
+            else if(parent == null || (parent.x != adjacent.x && parent.y != adjacent.y)){
+              // if adjacent is visited and not a parent, then there is a cycle
+              return true;
+            }
+        }
+        return false;
+    }
+
+    reset(){
+        this.visited_global = Array.from({ length: columns }, () => Array(rows).fill(false));
     }
 }
 
@@ -332,13 +400,14 @@ let showBorders = true;
 
 let populationSize = 1000;
 let maxIterations = 1000;
+let mutationRate = 5;
 let constraints = [];
 
 /////////////
 // Objects //
 /////////////
 
-let mainGrid = new Grid(rows, columns);
+let mainGrid = new Individual(rows, columns, constraints);
 
 //////////////////////
 // Helper Functions //
@@ -434,6 +503,7 @@ function handleMouseClick(event) {
 // CSP STUFF ///////////
 ////////////////////////
 
+/*
 function isCyclic(grid, cur, visited, parent, visited_global){
     // Recursive function to check if an active region is cyclic. returns true if cyclic
     visited[cur.x][cur.y] = true;
@@ -472,12 +542,14 @@ function acyclicConstraint(grid){
     }
     return true;
 }
+*/
 
 ///////////////////////
 // Genetic Algo ///////
 ///////////////////////
 
 function geneticAlgorithm(rows, columns, populationSize, maxIterations, constraints){
+    toggleNoSolutionError(false);
     // runs the genetic algorithm for at most maxIterations with a given population size and constraints
     let population = new Population(rows, columns, populationSize, constraints);
     let current_iteration = 0;
@@ -489,25 +561,48 @@ function geneticAlgorithm(rows, columns, populationSize, maxIterations, constrai
         const new_population = new Population(rows, columns, 0, constraints);
         
         for(let i = 0; i < populationSize; i++){
-            let x = new_population.randomSelection();
-            let y = new_population.randomSelection();
+            let x = population.randomSelection();
+            let y = population.randomSelection();
             let offspring = x.reproduce(y);
             if(offspring.isGoal()){
+                console.log(`goal reached after ${current_iteration} iterations.`)
+                changeCount(current_iteration);
                 goal_found = true;
                 bestIndividual = offspring;
+                return bestIndividual;
             }
             new_population.addIndividual(offspring);
-            current_iteration += 1;
             population = new_population;
         }
+        current_iteration += 1;
     }
-
+    toggleNoSolutionError(true);
+    changeCount(current_iteration);
     return bestIndividual;
 }
 
-///////////////////////
-// Handlers ///////////
-///////////////////////
+/////////////////////////////////////////////////
+// Handlers /////////////////////////////////////
+/////////////////////////////////////////////////
+function toggleNoSolutionError(show) {
+    const errorContainer = document.getElementById('errorNoSolution');
+    // Set the display property based on the boolean parameter
+    errorContainer.style.display = show ? 'block' : 'none';
+}
+
+function toggleConstraintsCheck(show, num = 0) {
+    const errorContainer = document.getElementById('constraintsCheck');
+    // Set the display property based on the boolean parameter
+    errorContainer.style.display = show ? 'block' : 'none';
+    const message = document.getElementById('constraintsMessage');
+    message.textContent = `! - Constraint Check: there was ${num} conflicts`;
+}
+
+function changeCount(newCount) {
+    const iterationElement = document.getElementById('iterationCount');
+    // Update the iteration count
+    iterationElement.innerText = `Iteration: ${newCount}`;
+}
 
 function randomHandler(){
     // generate random patern in grid
@@ -521,6 +616,8 @@ function randomHandler(){
 }
 
 function clearHandler(){
+    toggleNoSolutionError(false);
+    toggleConstraintsCheck(false);
     // clear the grid
     mainGrid.clear();
     
@@ -532,24 +629,36 @@ function clearHandler(){
 }
 
 function checkConstraintsHandler(){
-    const isConflicted = !acyclicConstraint(mainGrid);
-
-    if(isConflicted){
-        console.log("Conflict!!")
-        // Create a new paragraph element
-        const paragraph = document.createElement('p');
-
-        // Add text content to the paragraph
-        paragraph.textContent = 'There is a conflict with the constraints.';
-
-        // Append the paragraph to the body
-        document.body.appendChild(paragraph);
+    let isConflicted = false;
+    let num_conflicts = 0;
+    console.log("checking constraints...")
+    for(let constraint of constraints){
+        constraint.reset();
     }
+
+    for(let y = 0; y < rows; y++){
+        for(let x = 0; x < columns; x++){
+            // run each constraint on each cell
+            for(let constraint of constraints){
+                const satisfied = constraint.evaluate(mainGrid.getCell(x, y), mainGrid);
+                if(!satisfied){
+                    isConflicted = true;
+                    num_conflicts += 1;
+                    console.log("Conflict!!")
+                }
+            }
+        }
+    }
+    toggleConstraintsCheck(true, num_conflicts);
 }
 
 function generateHandler(){
+    console.log("generating with genetic algorithm...")
+    constraints.push(new AcyclicConstraint());
     const result = geneticAlgorithm(rows, columns, populationSize, maxIterations, constraints);
-
+    mainGrid = result;
+    drawGrid(mainGrid, showBorders);
+    console.log("Generate Complete.")
 }
 
 //////////////////////////
@@ -567,6 +676,22 @@ const colorPickerInactive = document.getElementById('colorPickerInactive');
 colorPickerInactive.addEventListener('input', function() {
     inactiveColor = colorPickerInactive.value;
     drawGrid(mainGrid, showBorders);
+});
+
+// constraints
+const acyclicToggle = document.getElementById('acyclic-constraint');
+
+acyclicToggle.addEventListener('change', function() {
+    const index = constraints.findIndex(existingItem => existingItem.name === "Acyclic Constraint");
+
+    if (index !== -1) {
+        // Item is in the array, remove it
+        constraints.splice(index, 1);
+    } else {
+        // Item is not in the array, add it
+        constraints.push(new AcyclicConstraint());
+    }
+    console.log(constraints);
 });
 
 // border toggle
@@ -603,4 +728,4 @@ populationSizeInput.addEventListener('input', function() {
 ////////////////////////
 
 // Initial grid drawing
-drawGrid(mainGrid, true);
+drawGrid(mainGrid, showBorders);
