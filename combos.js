@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (index === -1) {
             // Div is not in the list, add it
-            clickedDivs.push(divId);
+            clickedDivs.push(intToBinaryString(parseInt(divId)));
             console.log(`Clicked Divs: ${clickedDivs}`);
             changeColor(divId, 'blue')
         } else {

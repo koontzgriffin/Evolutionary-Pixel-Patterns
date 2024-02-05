@@ -102,7 +102,26 @@ class Grid {
     }
 
     getNeighborhoodSeed(x, y){
-        return;
+        // returns a binary string representation of the 3x3 block around the cell at x, y.
+        let seed = '';
+
+        for (let rowOffset = -1; rowOffset <= 1; rowOffset++) {
+            for (let colOffset = -1; colOffset <= 1; colOffset++) {
+                const neighborX = x + colOffset;
+                const neighborY = y + rowOffset;
+
+                // Check if the neighbor is within bounds
+                if (neighborX >= 0 && neighborX < this.columns && neighborY >= 0 && neighborY < this.rows) {
+                    const neighborCell = this.getCell(neighborX, neighborY);
+                    seed += neighborCell.active ? '1' : '0';
+                } else {
+                    // If the neighbor is outside the grid, set as 'X' to be ignored
+                    seed += 'X';
+                }
+            }
+        }
+
+        return seed;
     }
 
     clear() {
@@ -385,13 +404,41 @@ class AcyclicConstraint extends Constraint {
     }
 }
 
+class InactiveNeighborhoodsConstraint extends Constraint {
+    constructor(allowedNeighborhoods){
+        this.allowedNeighborhoods = allowedNeighborhoods;
+        this.name = "Inactive Neighborhoods Constraint";
+    }
+
+    evaluate(cell, individual) {
+        let neighborhood = individual.getNeighborhoodSeed(cell.x, cell.y);
+
+        for(let allowed of this.allowedNeighborhoods){
+            // compare and if matches any return true
+            let valid = true;
+            for(let i = 0; i < allowed.length; i++){
+                if(neighborhood[i] != allowed[i] && neighborhood[i] != 'X'){
+                    valid = false;
+                }
+                if(valid){
+                    // neighborhood is valid
+                    return true;
+                }
+            }
+        }
+
+        // neighborhood did not match any allowed neighborhoods
+        return false;
+    }
+}
+
 /////////////////////
 // Grid Constants ///
 /////////////////////
 
 let canvasWidth = 600;
-let columns = 30;
-let rows = 30;
+let columns = 16;
+let rows = 16;
 
 //////////////////////
 // Canvas Constants //
@@ -410,9 +457,9 @@ let showBorders = true;
 // Genetic Algo Constants //
 ////////////////////////////
 
-let populationSize = 1000;
-let maxIterations = 1000;
-let mutationRate = 2;
+let populationSize = 500;
+let maxIterations = 200;
+let mutationRate = 1;
 let constraints = [];
 
 /////////////
@@ -746,41 +793,6 @@ populationSizeInput.addEventListener('input', function() {
 ////////////////////////
 // RUN TIME ////////////
 ////////////////////////
-
-function testSelection(){
-    let individuals = [{fitness: -1}, {fitness: -4}, {fitness: -6},{fitness:0}, {fitness: -2}, {fitness: -3}]
-    let min = individuals.reduce(
-        (min, current) => Math.min(min, current.fitness),
-        Infinity
-      );
-    console.log(individuals);
-    // Calculate total fitness
-    let totalFitness = 0;
-    for (let i = 0; i < individuals.length; i++) {
-        totalFitness += (individuals[i].fitness - min);
-    }
-
-    // Generate a random value between 0 and totalFitness
-    const randomValue = Math.random() * totalFitness;
-    console.log(`rand = ${randomValue}`);
-
-    // Linear search to find the selected individual
-    let currentFitnessSum = 0;
-
-    for (let i = 0; i < individuals.length; i++) {
-        currentFitnessSum += (individuals[i].fitness - min);
-        console.log(`curSum = ${currentFitnessSum}`);
-
-        if (currentFitnessSum >= randomValue) {
-            console.log(individuals[i]);
-            return;
-        }
-    }
-
-    // Should not reach here, but return null if it does
-    console.log("FuCKEDDDD")
-}
-
 
 // Initial grid drawing
 drawGrid(mainGrid, showBorders);
