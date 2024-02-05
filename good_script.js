@@ -184,6 +184,12 @@ class Individual extends Grid {
     updateFitness(){
         // updates the fitness score of an individual
         this.fitness = 0; // set fitness to zero and subtract for conflicts
+
+        // reset all constraints
+        for(let constraint of constraints){
+            constraint.reset();
+        }
+
         // iterate through all cells
         for(let y = 0; y < rows; y++){
             for(let x = 0; x < columns; x++){
@@ -191,7 +197,7 @@ class Individual extends Grid {
                 for(let constraint of this.constraints){
                     const satisfied = constraint.evaluate(this.getCell(x, y), this);
                     if(!satisfied){
-                        this.fitness -= 1;
+                        this.fitness -= 5;
                     }
                 }
             }
@@ -200,8 +206,7 @@ class Individual extends Grid {
 
     reproduce(mate){
         // produces a child from the current individual and another
-        const child = new Individual(this.rows, this.columns);
-        child.constraints = this.constraints;
+        const child = new Individual(this.rows, this.columns, constraints);
         // random split
         const split = getRandomInt(0, this.rows * this.columns);
         // set the childs grid based on a combination of the mates
@@ -237,14 +242,14 @@ class Individual extends Grid {
             const row = Math.floor(index / this.columns);
             const col = index % this.columns;
 
-            // Perform the mutation (you can modify this based on your requirements)
-            this.grid[row][col] = getRandomInt(0, 4); // Assuming the grid values are integers from 0 to 3
+            // Perform the mutation
+            this.getCell(col, row).active ?  this.deactivateCell(col, row) : this.activateCell(col, row);
         }
     }
 
     isGoal(){
         // goal is reached if fitness = 0
-        return this.fitness == 0;
+        return this.fitness === 0;
     }
 
     addConstraint(constraint){
@@ -265,26 +270,33 @@ class Population {
     }
 
     randomSelection(){
-        // select an individual from this.individuals with a probability proportional to its fitness
+        // select an individual from this.individuals with a probability proportional to its fitness. optimal fitness is 0 worse fitness < 0
+        let min = this.individuals.reduce(
+            (min, current) => Math.min(min, current.fitness),
+            Infinity
+        );
         // Calculate total fitness
-        const totalFitness = this.individuals.reduce((sum, individual) => sum + individual.fitness, 0);
+        let totalFitness = 0;
+        for (let i = 0; i < this.individuals.length; i++) {
+            totalFitness += (this.individuals[i].fitness - min);
+        }
 
         // Generate a random value between 0 and totalFitness
         const randomValue = Math.random() * totalFitness;
 
-        // Perform roulette wheel selection
-        let accumulatedFitness = 0;
+        // Linear search to find the selected individual
+        let currentFitnessSum = 0;
 
-        for (let i = 0; i < this.size; i++) {
-            accumulatedFitness += this.individuals[i].fitness;
+        for (let i = 0; i < this.individuals.length; i++) {
+            currentFitnessSum += (this.individuals[i].fitness - min);
 
-            if (accumulatedFitness <= randomValue) {
+            if (currentFitnessSum >= randomValue) {
                 return this.individuals[i];
             }
         }
 
         // Should not reach here, but return null if it does
-        console.log("Error with random selection. Returning Null.")
+        console.log("FuCKEDDDD")
         return null;
     }
 
@@ -400,7 +412,7 @@ let showBorders = true;
 
 let populationSize = 1000;
 let maxIterations = 1000;
-let mutationRate = 5;
+let mutationRate = 2;
 let constraints = [];
 
 /////////////
@@ -555,29 +567,31 @@ function geneticAlgorithm(rows, columns, populationSize, maxIterations, constrai
     let current_iteration = 0;
     let goal_found = false;
     let bestIndividual = population.getBestIndividual();
-    
+    console.log(`original best fitness = ${bestIndividual.fitness}`);
+
     while(current_iteration < maxIterations && !goal_found){
-        bestIndividual = population.getBestIndividual();
         const new_population = new Population(rows, columns, 0, constraints);
-        
         for(let i = 0; i < populationSize; i++){
             let x = population.randomSelection();
             let y = population.randomSelection();
             let offspring = x.reproduce(y);
+            console.log(`ofspring fitness = ${offspring.fitness}`);
             if(offspring.isGoal()){
                 console.log(`goal reached after ${current_iteration} iterations.`)
-                changeCount(current_iteration);
                 goal_found = true;
                 bestIndividual = offspring;
+                changeCount(current_iteration);
                 return bestIndividual;
             }
             new_population.addIndividual(offspring);
             population = new_population;
+
         }
         current_iteration += 1;
     }
     toggleNoSolutionError(true);
     changeCount(current_iteration);
+    console.log(bestIndividual);
     return bestIndividual;
 }
 
@@ -653,12 +667,18 @@ function checkConstraintsHandler(){
 }
 
 function generateHandler(){
-    console.log("generating with genetic algorithm...")
-    constraints.push(new AcyclicConstraint());
+    console.log("generating with genetic algorithm...");
     const result = geneticAlgorithm(rows, columns, populationSize, maxIterations, constraints);
     mainGrid = result;
     drawGrid(mainGrid, showBorders);
     console.log("Generate Complete.")
+}
+
+function mutateHandler(){
+    console.log("mutating...");
+    mainGrid.mutate(mutationRate);
+    drawGrid(mainGrid, showBorders);
+    console.log("Mutate Complete.");
 }
 
 //////////////////////////
@@ -709,7 +729,7 @@ columnsInput.addEventListener('input', function() {
     columns = parseInt(this.value, 10); // Parse the value as an integer
     rows = columns;
     cellSize = canvasWidth/columns;
-    mainGrid = new Grid(rows, columns);
+    mainGrid = new Individual(rows, columns);
     drawGrid(mainGrid, showBorders);
 });
 
@@ -726,6 +746,41 @@ populationSizeInput.addEventListener('input', function() {
 ////////////////////////
 // RUN TIME ////////////
 ////////////////////////
+
+function testSelection(){
+    let individuals = [{fitness: -1}, {fitness: -4}, {fitness: -6},{fitness:0}, {fitness: -2}, {fitness: -3}]
+    let min = individuals.reduce(
+        (min, current) => Math.min(min, current.fitness),
+        Infinity
+      );
+    console.log(individuals);
+    // Calculate total fitness
+    let totalFitness = 0;
+    for (let i = 0; i < individuals.length; i++) {
+        totalFitness += (individuals[i].fitness - min);
+    }
+
+    // Generate a random value between 0 and totalFitness
+    const randomValue = Math.random() * totalFitness;
+    console.log(`rand = ${randomValue}`);
+
+    // Linear search to find the selected individual
+    let currentFitnessSum = 0;
+
+    for (let i = 0; i < individuals.length; i++) {
+        currentFitnessSum += (individuals[i].fitness - min);
+        console.log(`curSum = ${currentFitnessSum}`);
+
+        if (currentFitnessSum >= randomValue) {
+            console.log(individuals[i]);
+            return;
+        }
+    }
+
+    // Should not reach here, but return null if it does
+    console.log("FuCKEDDDD")
+}
+
 
 // Initial grid drawing
 drawGrid(mainGrid, showBorders);

@@ -1,4 +1,3 @@
-
 // Grid Constants
 const windowWidth = 600; //window.innerWidth;
 const windowHeight = 600; //window.innerHeight;

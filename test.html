@@ -96,15 +96,24 @@
         }
 
     </style>
-    <title>CSP Pattern Generator</title>
+    <title>Genetic Pattern Generator</title>
 </head>
 <body>
-    <h1>Pattern Generator</h1>
+    <h1>Evolutionary Pixel Patterns</h1>
     <div class="flex-container">
         <div class="flex-item">
-            <p>Welcome to the Genetic Pattern Generator! 
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat optio neque architecto et tempore odio, 
-                quas possimus at sunt exercitationem saepe nihil eos cupiditate eum dolor error doloribus id repudiandae?</p>
+            <p><b>Welcome to Evolutionary Pixel Patterns where Art Meets Algorithm! </b></p>
+            <p>
+                The genetic algorithm employed by this application functions as a heuristic search inspired by natural selection and
+                genetics, aiming to generate optimal solutions for drawing patterns on a 2D grid of pixels. In the initialization phase,
+                a population of potential solutions, represented as individuals with randomly generated patterns, is created. The
+                fitness of each individual is assessed based on how well its pattern adheres to a set of given constraints. Through
+                successive generations, individuals are selected, undergo crossover and mutation, mimicking genetic processes, and
+                create offspring with potentially improved fitness. The algorithm iteratively refines the population, guiding the
+                evolution towards patterns that increasingly satisfy the specified constraints, ultimately producing aesthetically
+                pleasing and constraint-compliant visual compositions on the pixel grid.</p>
+            <p>Learn more on <a href="www.github.com/koontzgriffin">Github</a></p>
+            <p>Or read the blog post on my <a href="https://www.griffinkoontz.com/">site</a>!</p>
         </div>
         <div class="flex-item">
             <div id="canvasContainer">
@@ -113,8 +122,9 @@
                 <div>
                     <button onclick="randomHandler()">Random</button>
                     <button onclick="generateHandler()">Generate</button>
-                    <button onclick="clearHandler()">Clear</button>
                     <button onclick="checkConstraintsHandler()">Check Conflicts</button>
+                    <button onclick="mutateHandler()">Mutate</button>
+                    <button onclick="clearHandler()">Clear</button>
                     <p id="iterationCount">iteration: 0</p>
                 </div>
                 
