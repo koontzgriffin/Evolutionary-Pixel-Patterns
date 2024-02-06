@@ -136,11 +136,11 @@
                 <h2>Settings</h2>
                 <div class="constraints">
                     <h3><u>Constraints:</u></h3>
-                    <label for="checkbox1">
+                    <label for="acyclic-constraint">
                         <input type="checkbox" id="acyclic-constraint"> <b> Acyclic Active Regions</b> - all active regions must be <a href="https://mathworld.wolfram.com/AcyclicGraph.html#:~:text=An%20acyclic%20graph%20is%20a,of%20acyclic%20graphs%20(forests)%20on">acyclic</a>.
                     </label>
     
-                    <label for="checkbox2">
+                    <label for="inactive-regions-constraint">
                         <input type="checkbox" id="inactive-regions-constraint"> <b>Restrict Inactive Regions</b> - <a href="./combos.html">view and edit allowed neighborhoods</a>
                     </label>
                 </div>
@@ -170,6 +170,10 @@
                     <label for="populationSize">Population Size:
                         <input type="number" id="populationSize" name="populationSize" value="500">
                     </label>
+
+                    <label for="mutationRate">Mutation Rate:
+                        <input type="number" id="mutationRate" name="mutationRate" value="500">
+                    </label>
                 </div>
             </div>
             <div class="errors">
@@ -186,6 +190,6 @@
 
     </div>
 
-    <script src="good_script.js"></script>
+    <script src="./main.js"></script>
 </body>
 </html>

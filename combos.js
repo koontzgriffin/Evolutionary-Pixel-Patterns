@@ -1,6 +1,9 @@
+
+
 // script.js
 const CANVAS_SIZE = 100;
-const clickedDivs = []; // List to store clicked div IDs
+const clickedDivs = [40,41,44,45,47,97,101,102,103,104,105,108,109,111,130,131,133,134,135,194,195,197,198,199,205,271,269,268,267,296,297,301,300,303,322,323,325,326,327,331,332,333,335,353,357,358,359,360,361,364,365,367,386,387,389,390,391,417,421,422,423,450,451,453,454,455,459,460,461,463,481,485,488,487,486,489,493,492,207,203,204]; // List to store clicked div IDs
+const validBin = [];
 
 function intToBinaryString(number) {
     // Ensure the number is within the 9-bit range
@@ -95,3 +98,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
   
+
+for(let num of clickedDivs){
+    validBin.push(intToBinaryString(num));
+}
+
+console.log(validBin);
