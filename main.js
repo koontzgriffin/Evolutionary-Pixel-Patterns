@@ -214,10 +214,8 @@ class Individual extends Grid {
             for(let x = 0; x < columns; x++){
                 // run each constraint on each cell
                 for(let constraint of this.constraints){
-                    const satisfied = constraint.evaluate(this.getCell(x, y), this);
-                    if(!satisfied){
-                        this.fitness -= 5;
-                    }
+                    // subtract the constraint return
+                    this.fitness -= constraint.evaluate(this.getCell(x, y), this);
                 }
             }
         }
@@ -228,7 +226,6 @@ class Individual extends Grid {
         const child = new Individual(this.rows, this.columns, constraints);
         // return early based on mutation rate
         if(Math.random() > rate){
-            console.log("reproduce returning without crossover...");
             child.fillFromArray(this.grid.flat());
             // mutate the child
             child.mutate(mutationRate);
@@ -378,7 +375,7 @@ class Constraint {
 
     evaluate(cell, individual) {
         // an empty evaluate function that is always satisfied. takes a cell and an individual.
-        return true;
+        return 0;
     }
 
     reset(){
@@ -443,7 +440,7 @@ class InactiveNeighborhoodsConstraint extends Constraint {
     evaluate(cell, individual) {
         if(cell.active){
             // constraint only relevant for inactive cells
-            return true;
+            return 0;
         }
 
         let neighborhood = individual.getNeighborhoodSeed(cell.x, cell.y);
@@ -459,12 +456,67 @@ class InactiveNeighborhoodsConstraint extends Constraint {
             }
             if(valid){
                 // neighborhood is valid
-                return true;
+                return 0;
             }
         }
 
         // neighborhood did not match any allowed neighborhoods
-        return false;
+        return 1;
+    }
+}
+
+class ActiveRegionConstraint extends Constraint {
+    constructor(){
+        super();
+        this.name = "Active Region Constraint";
+        this.visited_global = Array.from({ length: columns }, () => Array(rows).fill(false));
+    }
+
+    evaluate(cell, individual){
+        // checks if a region starting from "cell" is has cycles
+        // returns a fitness deduction based on num_cycles
+        if(!cell.active || this.visited_global[cell.x][cell.y]){
+            // constraint only relevant on active cells and cells that havent been a part of a previous region.
+            return 0;
+        }
+        // if position is active, then get the region
+        let region = this.getRegion(individual, cell, null);
+
+        return region.num_cycles;
+    }
+
+    getRegionRecursive(individual, cur, visited, parent, region){
+        // Recursive function to check a region for number of cycles.
+        visited[cur.x][cur.y] = true;
+        region.size++;
+        this.visited_global[cur.x][cur.y] = true;
+        for(const adjacent of individual.getAdjacentCells(cur.x, cur.y)){
+            if(!visited[adjacent.x][adjacent.y]){
+                // if adjacent is not visited, then recurse
+                this.getRegionRecursive(individual, adjacent, visited, cur, region)
+            }
+            else if(parent == null || (parent.x != adjacent.x && parent.y != adjacent.y)){
+              // if adjacent is visited and not a parent, then there is a cycle
+              region.num_cycles++;
+            }
+        }
+
+    }
+
+    getRegion(individual, cur, parent){
+        let visited = Array.from({ length: individual.columns }, () => Array(individual.rows).fill(false));
+        let region = {
+            size: 0,
+            num_cycles: 0
+        }
+
+        this.getRegionRecursive(individual, cur, visited, parent, region);
+
+        return region;
+    }
+
+    reset(){
+        this.visited_global = Array.from({ length: columns }, () => Array(rows).fill(false));
     }
 }
 
@@ -520,6 +572,8 @@ function getRandomInt(min, max){
 function drawGrid(grid, show_borders) {
     ctx.fillStyle = activeColor;
     ctx.strokeStyle = '#dddd';
+
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
     for (let row = 0; row < grid.rows; row++) {
         for (let col = 0; col < grid.columns; col++) {
@@ -690,7 +744,6 @@ function clearHandler(){
 }
 
 function checkConstraintsHandler(){
-    let isConflicted = false;
     let num_conflicts = 0;
     console.log("checking constraints...")
     for(let constraint of constraints){
@@ -701,12 +754,7 @@ function checkConstraintsHandler(){
         for(let x = 0; x < columns; x++){
             // run each constraint on each cell
             for(let constraint of constraints){
-                const satisfied = constraint.evaluate(mainGrid.getCell(x, y), mainGrid);
-                if(!satisfied){
-                    isConflicted = true;
-                    num_conflicts += 1;
-                    console.log("Conflict!!")
-                }
+                num_conflicts += constraint.evaluate(mainGrid.getCell(x, y), mainGrid);
             }
         }
     }
@@ -749,14 +797,14 @@ colorPickerInactive.addEventListener('input', function() {
 const acyclicToggle = document.getElementById('acyclic-constraint');
 
 acyclicToggle.addEventListener('change', function() {
-    const index = constraints.findIndex(existingItem => existingItem.name === "Acyclic Constraint");
+    const index = constraints.findIndex(existingItem => existingItem.name === "Active Region Constraint");
 
     if (index !== -1) {
         // Item is in the array, remove it
         constraints.splice(index, 1);
     } else {
         // Item is not in the array, add it
-        constraints.push(new AcyclicConstraint());
+        constraints.push(new ActiveRegionConstraint());
     }
     console.log(constraints);
 });
