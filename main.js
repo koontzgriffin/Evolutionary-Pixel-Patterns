@@ -223,9 +223,19 @@ class Individual extends Grid {
         }
     }
 
-    reproduce(mate){
-        // produces a child from the current individual and another
+    reproduce(mate, rate){
+        // produces a child from the current individual and another.
         const child = new Individual(this.rows, this.columns, constraints);
+        // return early based on mutation rate
+        if(Math.random() > rate){
+            console.log("reproduce returning without crossover...");
+            child.fillFromArray(this.grid.flat());
+            // mutate the child
+            child.mutate(mutationRate);
+            // update fitness
+            child.updateFitness();
+            return child;
+        }
         // random split
         const split = getRandomInt(0, this.rows * this.columns);
         // set the childs grid based on a combination of the mates
@@ -241,28 +251,14 @@ class Individual extends Grid {
         return child;
     }
 
-    mutate(percentage){
-        // mutates the individual randomly (randomly alters a percentage of the individuals grid cells)
-        // Calculate the total number of cells in the grid
-        const totalCells = this.rows * this.columns;
-
-        // Calculate the number of cells to mutate based on the specified percentage
-        const numCellsToMutate = Math.floor(percentage * totalCells / 100);
-
-        // Create an array of all cell indices
-        const allCellIndices = Array.from({ length: totalCells }, (_, index) => index);
-
-        // Shuffle the array to get random indices
-        const shuffledIndices = shuffleArray(allCellIndices);
-
-        // Mutate the selected number of cells
-        for (let i = 0; i < numCellsToMutate; i++) {
-            const index = shuffledIndices[i];
-            const row = Math.floor(index / this.columns);
-            const col = index % this.columns;
-
-            // Perform the mutation
-            this.getCell(col, row).active ?  this.deactivateCell(col, row) : this.activateCell(col, row);
+    mutate(rate){
+        for (let i = 0; i < this.rows * this.columns; i++) {
+            if (Math.random() < rate) {
+                // Apply mutation to the gene at index i
+                const row = Math.floor(i/ this.columns);
+                const col = i % this.columns;
+                this.getCell(col, row).active ?  this.deactivateCell(col, row) : this.activateCell(col, row);
+            }
         }
     }
 
@@ -289,7 +285,7 @@ class Population {
     }
 
     randomSelection(){
-        // select an individual from this.individuals with a probability proportional to its fitness. optimal fitness is 0 worse fitness < 0
+        // Select an individual from this.individuals with a probability proportional to its fitness. optimal fitness is 0 worse fitness < 0
         let min = this.individuals.reduce(
             (min, current) => Math.min(min, current.fitness),
             Infinity
@@ -315,10 +311,43 @@ class Population {
         }
 
         // Should not reach here, but return null if it does
-        console.log("FuCKEDDDD")
         return null;
     }
 
+    bestSelection() {
+        let min = this.individuals.reduce(
+            (min, current) => Math.min(min, current.fitness),
+            Infinity
+        );
+        // Sort individuals based on fitness (ascending order)
+        const sortedIndividuals = this.individuals.slice().sort((a, b) => a.fitness - b.fitness);
+    
+        // Calculate the index corresponding to the top 10% (adjust as needed)
+        const top10PercentIndex = Math.floor(0.7 * this.individuals.length);
+    
+        // Calculate total fitness for the top 10%
+        let totalTopFitness = 0;
+        for (let i = top10PercentIndex; i < this.individuals.length; i++) {
+            totalTopFitness += sortedIndividuals[i].fitness - min;
+        }
+    
+        // Generate a random value between 0 and totalTopFitness
+        const randomValue = Math.random() * totalTopFitness;
+    
+        // Linear search to find the selected individual within the top 10%
+        let currentFitnessSum = 0;
+        for (let i = top10PercentIndex; i < this.individuals.length; i++) {
+            currentFitnessSum += sortedIndividuals[i].fitness - min;
+    
+            if (currentFitnessSum >= randomValue) {
+                return sortedIndividuals[i];
+            }
+        }
+    
+        // Should not reach here, but return null if it does
+        return null;
+    }
+    
     getBestIndividual(){
         // returns the individual with the highest fitness
         let bestIndividual = null;
@@ -471,7 +500,8 @@ let vaildInactiveNeighborhoods = ['000101000', '000101001', '000101100', '000101
 
 let populationSize = 500;
 let maxIterations = 200;
-let mutationRate = 2;
+let mutationRate = 0.1;
+let crossoverRate = 0.75;
 let constraints = [];
 
 /////////////
@@ -587,11 +617,12 @@ function geneticAlgorithm(rows, columns, populationSize, maxIterations, constrai
         bestIndividual = population.getBestIndividual();
         const new_population = new Population(rows, columns, 0, constraints);
         new_population.addIndividual(bestIndividual);
+        console.log(`gen ${current_iteration} best individual fitness = ${bestIndividual.fitness}`);
         for(let i = 0; i < populationSize - 1; i++){
-            let x = population.randomSelection();
-            let y = population.randomSelection();
-            let offspring = x.reproduce(y);
-            console.log(`ofspring fitness = ${offspring.fitness}`);
+            let x = population.bestSelection(); // population.randomSelection();
+            let y = population.bestSelection(); // population.randomSelection();
+            let offspring = x.reproduce(y, crossoverRate);
+            //console.log(`ofspring fitness = ${offspring.fitness}`);
             if(offspring.isGoal()){
                 console.log(`goal reached after ${current_iteration} iterations.`)
                 goal_found = true;
@@ -773,6 +804,17 @@ const populationSizeInput = document.getElementById('populationSize');
 populationSizeInput.addEventListener('input', function() {
     populationSize = parseInt(this.value, 10); // Parse the value as an integer
 });
+
+const mutationRateInput = document.getElementById('mutationRate');
+mutationRateInput.addEventListener('input', function() {
+    mutationRate = parseFloat(this.value, 10); // Parse the value as a float
+});
+
+const crossoverRateInput = document.getElementById('crossoverRate');
+crossoverRateInput.addEventListener('input', function() {
+    crossoverRate = parseFloat(this.value, 10); // Parse the value as a float
+});
+
 
 ////////////////////////
 // RUN TIME ////////////
