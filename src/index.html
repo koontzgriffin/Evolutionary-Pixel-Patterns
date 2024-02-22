@@ -94,6 +94,43 @@
                 flex-direction: column;
             }
         }
+        .gallery-container {
+            background-color: #dcf6f9;
+        }
+        .gallery-container h2 {
+            margin-top: 5px;
+            margin-bottom: 2px;
+        }
+        .gallery-container p {
+            margin-bottom: 2px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .gallery-item {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 5px;
+            text-align: center;
+        }
+        .gallery-item h3 {
+            padding: 1px;
+            margin: 1px;
+        }
+        .gallery-item p {
+            padding: 1px;
+            margin: 1px;
+        }
+        .gallery-item canvas {
+            width: 100%;
+            height: auto;
+            max-width: 350px; /* Limit the maximum width */
+            max-height: 350px; /* Limit the maximum height */
+            border: 1px solid #000;
+        }
 
     </style>
     <title>Genetic Pattern Generator</title>
@@ -193,6 +230,11 @@
             </div>
         </div>
     </div>
+    <div class="gallery-container">
+        <h2>Gallery</h2>
+        <p>Pattern Creations by our algoritmic artists!</p>
+        <div class="gallery" id="gallery"></div>
+    </div>
 
     <script src="./grid.js"></script>
     <script src="./individual.js"></script>
@@ -201,5 +243,6 @@
     <script src="./cookies_handler.js"></script>
     <script src="./main.js"></script>
     <script src="./eventHandlers.js"></script>
+    <script src="gallery.js"></script>
 </body>
 </html>
