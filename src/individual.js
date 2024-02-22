@@ -35,10 +35,10 @@ class Individual extends Grid {
     }
 
     reproduce(mate, rate){
-        // produces a child from the current individual and another.
-        const child = new Individual(this.rows, this.columns, constraints);
         // return early based on mutation rate
-        if(Math.random() > rate){
+        if(Math.random() > rate){ 
+            const child = new Individual(this.rows, this.columns, constraints);
+            
             child.fillFromArray(this.grid.flat());
             // mutate the child
             child.mutate(mutationRate);
@@ -46,6 +46,20 @@ class Individual extends Grid {
             child.updateFitness();
             return child;
         }
+        let child = this.boxCrossover(mate); // this.splitCrossover(mate);
+
+        // mutate the child
+        child.mutate(mutationRate);
+        // update fitness
+        child.updateFitness();
+
+        return child;
+    }
+
+    splitCrossover(mate){
+        // produces a child from the current individual and another.
+        const child = new Individual(this.rows, this.columns, constraints);
+
         // random split
         const split = getRandomInt(0, this.rows * this.columns);
         // set the childs grid based on a combination of the mates
@@ -53,11 +67,34 @@ class Individual extends Grid {
         const genomeB = mate.grid.flat();
         const genome_child = genomeA.slice(0, split).concat(genomeB.slice(split))
         child.fillFromArray(genome_child);
-        // mutate the child
-        child.mutate(mutationRate);
-        // update fitness
-        child.updateFitness();
 
+        return child;
+    }
+
+    boxCrossover(mate){
+        // Create a child individual
+        const child = new Individual(this.rows, this.columns, this.constraints);
+
+        // Randomly select crossover points
+        const startX = getRandomInt(0, this.columns);
+        const startY = getRandomInt(0, this.rows);
+
+        // Square size
+        const squareSizeX = getRandomInt(0, this.columns - startX);
+        const squareSizeY = getRandomInt(0, this.rows - startY);
+        //console.log(`boxCrossover start = (${startX}, ${startY}), size = ${squareSizeX}, ${squareSizeY}`);
+
+        // Perform crossover
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.columns; col++) {
+                if (col >= startX && col < startX + squareSizeX && row >= startY && row < startY + squareSizeY) {
+                    //console.log(`replacing (${col}, ${row})`);
+                    mate.getCell(col, row).active ? child.activateCell(col, row) : child.deactivateCell(col, row); // Replace region with mate's genome
+                } else {
+                    this.getCell(col, row).active ? child.activateCell(col, row) : child.deactivateCell(col, row); // Keep the rest from current individual
+                }
+            }
+        }
         return child;
     }
 
