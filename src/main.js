@@ -191,10 +191,18 @@ function toggleNoSolutionError(show) {
     errorContainer.style.display = show ? 'block' : 'none';
 }
 
+function toggleAddToGallery(show){
+    const addToGalleryContainer = document.getElementById('addToGallery');
+    // Set the display property based on the boolean parameter
+    addToGalleryContainer.style.display = show ? 'block' : 'none';
+}
+
 function toggleGenerationComplete(show) {
     const errorContainer = document.getElementById('generationComplete');
     // Set the display property based on the boolean parameter
     errorContainer.style.display = show ? 'block' : 'none';
+
+    toggleAddToGallery(show);
 }
 
 function toggleConstraintsCheck(show, num = 0) {
@@ -275,6 +283,37 @@ function mutateHandler(){
     mainGrid.mutate(mutationRate);
     drawGrid(mainGrid, showBorders);
     console.log("Mutate Complete.");
+}
+
+async function addToGalleryHandler(){
+    console.log('adding to gallery...')
+    const artistName = document.getElementById('artistName').value;
+    const newItem = {
+        patternId: 'testId',
+        artistName: artistName, // Add the artistName to the newItem object
+        settings: {
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            columns: columns,
+            maxIterations: maxIterations,
+            populationSize: populationSize,
+            mutationRate: toString(mutationRate),
+            crossoverRate: toString(crossoverRate),
+            constraints: constraints.map(constraint => constraint.name),
+            inactiveNeighborhoods: vaildInactiveNeighborhoods,
+            activeNeighborhoods: []
+        },
+        grid: mainGrid.grid,
+    };
+    
+    try {
+        const response = await addGalleryItem(newItem);
+        console.log('Item added successfully:', response);
+        // Do something with the response, like showing a success message
+        toggleAddToGallery(false);
+    } catch (error) {
+        console.error('Error adding item:', error);
+    }
 }
 
 ////////////////////////

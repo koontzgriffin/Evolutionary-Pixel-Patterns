@@ -1,5 +1,5 @@
 const itemsData = [
-    { title: 'Item 1', description: 'Description for Item 1', canvasId: 'canvas1', settings: {
+    { artistName: 'Griffin Koontz', patternId: 'canvas1', settings: {
         activeColor: '#000000',
         inactiveColor: '#00000',
         columns: 10,
@@ -13,7 +13,7 @@ const itemsData = [
         },
         grid: [[]],
     },
-    { title: 'Item 2', description: 'Description for Item 2', canvasId: 'canvas2', settings: {
+    { artistName: 'Bobington', patternId: 'canvas2', settings: {
         activeColor: '#000000',
         inactiveColor: '#00000',
         columns: 10,
@@ -27,7 +27,7 @@ const itemsData = [
         },
         grid: [[]],
     },
-    { title: 'Item 3', description: 'Description for Item 3', canvasId: 'canvas3', settings: {
+    { artistName: 'Griffin Koontz', patternId: 'canvas3', settings: {
         activeColor: '#000000',
         inactiveColor: '#00000',
         columns: 10,
@@ -50,23 +50,23 @@ function createGalleryItem(galleryItem) {
     item.classList.add('gallery-item');
 
     const canvas = document.createElement('canvas');
-    canvas.id = galleryItem.canvasId; // Set a unique identifier for the canvas
+    canvas.id = galleryItem.patternId; // Set a unique identifier for the canvas
     canvas.width = 200;
     canvas.height = 200;
     const ctx = canvas.getContext('2d');
     drawGalleryCanvas(canvas, galleryItem.settings.columns, galleryItem.settings.columns, galleryItem.settings.activeColor, galleryItem.settings.inactiveColor);
 
     const heading = document.createElement('h3');
-    heading.textContent = galleryItem.title;
+    heading.textContent = 'By';
 
     const paragraph = document.createElement('p');
-    paragraph.textContent = galleryItem.description;
+    paragraph.textContent = galleryItem.artistName;
 
     const button = document.createElement('button');
     button.textContent = 'Copy Settings';
     button.addEventListener('click', () => {
-        const clickedCanvasId = canvas.id;
-        const clickedItem = itemsData.find(item => item.canvasId === clickedCanvasId);
+        const clickedGalleryId = canvas.id;
+        const clickedItem = itemsData.find(item => item.patternId === clickedGalleryId);
         console.log(clickedItem);
     });
 
@@ -106,6 +106,5 @@ function drawGalleryCanvas(canvas, rows, cols, activeColor, inactiveColor) {
         }
     }
 }
-
   // Populate the gallery when the page loads
   window.addEventListener('DOMContentLoaded', populateGallery(itemsData));

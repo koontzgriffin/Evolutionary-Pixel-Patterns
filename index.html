@@ -153,6 +153,11 @@
             <p>Or read the blog post on my <a href="https://www.griffinkoontz.com/">site</a>!</p>
         </div>
         <div class="flex-item">
+            <div class="addToGallery" id="addToGallery" style="margin-bottom: 10px; display: none;">
+                <label for="artistName">Artist Name:</label>
+                <input type="text" id="artistName" name="artistName">
+                <button id="addToGalleryButton" onclick="addToGalleryHandler()">Add to Gallery</button>
+            </div>
             <div id="canvasContainer">
                 <canvas id="gridCanvas"></canvas>
                 <br>
@@ -241,6 +246,7 @@
     <script src="./src/models/population.js"></script>
     <script src="./src/models/constraint.js"></script>
     <script src="./src/handlers/cookies_handler.js"></script>
+    <script src="./src/api/galleryApi.js"></script>
     <script src="./src/main.js"></script>
     <script src="./src/handlers/eventHandlers.js"></script>
     <script src="./src/gallery.js"></script>
