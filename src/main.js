@@ -288,8 +288,10 @@ function mutateHandler(){
 async function addToGalleryHandler(){
     console.log('adding to gallery...')
     const artistName = document.getElementById('artistName').value;
+    const timestamp = new Date().getTime().toString(16);
     const newItem = {
-        patternId: 'testId',
+        patternId: `${artistName}-${timestamp}`,
+        timestamp: timestamp,
         artistName: artistName, // Add the artistName to the newItem object
         settings: {
             activeColor: activeColor,
@@ -297,13 +299,13 @@ async function addToGalleryHandler(){
             columns: columns,
             maxIterations: maxIterations,
             populationSize: populationSize,
-            mutationRate: toString(mutationRate),
-            crossoverRate: toString(crossoverRate),
+            mutationRate: mutationRate.toString(),
+            crossoverRate: crossoverRate.toString(),
             constraints: constraints.map(constraint => constraint.name),
             inactiveNeighborhoods: vaildInactiveNeighborhoods,
             activeNeighborhoods: []
         },
-        grid: mainGrid.grid,
+        grid: mainGrid.toArray(),
     };
     
     try {
@@ -311,6 +313,7 @@ async function addToGalleryHandler(){
         console.log('Item added successfully:', response);
         // Do something with the response, like showing a success message
         toggleAddToGallery(false);
+        fetchAndPopulateGallery();
     } catch (error) {
         console.error('Error adding item:', error);
     }

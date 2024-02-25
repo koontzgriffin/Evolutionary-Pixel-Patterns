@@ -183,6 +183,18 @@ class Grid {
             }
         }
     }
+    toArray() {
+        const array = [];
+        for (let i = 0; i < this.rows; i++) {
+            const row = [];
+            for (let j = 0; j < this.columns; j++) {
+                const cell = this.grid[i][j];
+                row.push(cell.active ? 1 : 0);
+            }
+            array.push(row);
+        }
+        return array;
+    }
 }
 
 // Export classes for use in other files

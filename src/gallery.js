@@ -1,48 +1,23 @@
-const itemsData = [
-    { artistName: 'Griffin Koontz', patternId: 'canvas1', settings: {
-        activeColor: '#000000',
-        inactiveColor: '#00000',
-        columns: 10,
-        maxIterations: 50,
-        populationSize: 1000,
-        mutationRate: 0.5,
-        crossoverRate: 0.5,
-        constraints: [],
-        inactiveNeighborhoods: [],
-        activeNeighborhoods: []
-        },
-        grid: [[]],
-    },
-    { artistName: 'Bobington', patternId: 'canvas2', settings: {
-        activeColor: '#000000',
-        inactiveColor: '#00000',
-        columns: 10,
-        maxIterations: 50,
-        populationSize: 1000,
-        mutationRate: 0.5,
-        crossoverRate: 0.5,
-        constraints: [],
-        inactiveNeighborhoods: [],
-        activeNeighborhoods: []
-        },
-        grid: [[]],
-    },
-    { artistName: 'Griffin Koontz', patternId: 'canvas3', settings: {
-        activeColor: '#000000',
-        inactiveColor: '#00000',
-        columns: 10,
-        maxIterations: 50,
-        populationSize: 1000,
-        mutationRate: 0.5,
-        crossoverRate: 0.5,
-        constraints: [],
-        inactiveNeighborhoods: [],
-        activeNeighborhoods: []
-        },
-        grid: [[]],
-    },
-    // Add more items as needed
-];
+galleryItems = [];
+
+// Function to fetch gallery items and then populate the gallery
+async function fetchAndPopulateGallery() {
+    try {
+        const newGalleryItems = await getGalleryItems(); // Fetch latest items
+        galleryItems = newGalleryItems;
+        clearGallery(); // Clear existing gallery
+        console.log(newGalleryItems);
+        populateGallery(newGalleryItems); // Populate gallery with new items
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Function to clear the existing gallery
+function clearGallery() {
+    const gallery = document.getElementById('gallery');
+    gallery.innerHTML = ''; // Clear gallery content
+}
 
 // Function to create a gallery item
 function createGalleryItem(galleryItem) {
@@ -54,7 +29,7 @@ function createGalleryItem(galleryItem) {
     canvas.width = 200;
     canvas.height = 200;
     const ctx = canvas.getContext('2d');
-    drawGalleryCanvas(canvas, galleryItem.settings.columns, galleryItem.settings.columns, galleryItem.settings.activeColor, galleryItem.settings.inactiveColor);
+    drawGalleryCanvas(canvas, galleryItem);
 
     const heading = document.createElement('h3');
     heading.textContent = 'By';
@@ -66,7 +41,7 @@ function createGalleryItem(galleryItem) {
     button.textContent = 'Copy Settings';
     button.addEventListener('click', () => {
         const clickedGalleryId = canvas.id;
-        const clickedItem = itemsData.find(item => item.patternId === clickedGalleryId);
+        const clickedItem = galleryItems.find(item => item.patternId === clickedGalleryId);
         console.log(clickedItem);
     });
 
@@ -89,22 +64,28 @@ function populateGallery(itemsData) {
     });
 }
 
-function drawGalleryCanvas(canvas, rows, cols, activeColor, inactiveColor) {
+function drawGalleryCanvas(canvas, galleryItem) {
     const ctx = canvas.getContext('2d');
-    const cellSize = Math.min(canvas.width / cols, canvas.height / rows);
+    const cellSize = Math.min(canvas.width / galleryItem.settings.columns, canvas.height / galleryItem.settings.columns);
 
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw the grid
     ctx.strokeStyle = '#000';
-    for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
+    for (let i = 0; i < galleryItem.settings.columns; i++) {
+        for (let j = 0; j < galleryItem.settings.columns; j++) {
             const x = j * cellSize;
             const y = i * cellSize;
-            ctx.strokeRect(x, y, cellSize, cellSize);
+            if(galleryItem.grid[j][i] == '1'){
+                ctx.fillStyle = galleryItem.settings.activeColor;
+            } else{
+                ctx.fillStyle = galleryItem.settings.inactiveColor;
+            }
+            ctx.fillRect(x, y, cellSize, cellSize);
         }
     }
 }
-  // Populate the gallery when the page loads
-  window.addEventListener('DOMContentLoaded', populateGallery(itemsData));
+
+// Populate the gallery when the page loads
+window.addEventListener('DOMContentLoaded', fetchAndPopulateGallery);

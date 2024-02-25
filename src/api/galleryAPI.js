@@ -21,8 +21,13 @@ async function addGalleryItem(item) {
 
 async function getGalleryItems() {
     try {
+        let headersList = {
+            "Accept": "*/*",
+            "Content-Type": "application/json",
+        }
         const response = await fetch(apiUrl, {
-            method: 'GET'
+            method: 'GET',
+            headers: headersList
         });
         const data = await response.json();
         return data;
