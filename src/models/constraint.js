@@ -117,17 +117,22 @@ class ActiveRegionConstraint extends Constraint {
 
     getRegionRecursive(individual, cur, visited, parent, region){
         // Recursive function to check a region for number of cycles.
+        //console.log(`getRegionRecursive: cur=(${cur.x}, ${cur.y}), parrent=${parent}`);
+
         visited[cur.x][cur.y] = true;
-        region.size++;
         this.visited_global[cur.x][cur.y] = true;
+        region.size++;
         for(const adjacent of individual.getAdjacentCells(cur.x, cur.y)){
+            //console.log(`at (${cur.x}, ${cur.y}) checking adjacent (${adjacent.x}, ${adjacent.y})`);
             if(!visited[adjacent.x][adjacent.y]){
+                //console.log('adjacent is not visited');
                 // if adjacent is not visited, then recurse
                 this.getRegionRecursive(individual, adjacent, visited, cur, region)
             }
-            else if(parent == null || (parent.x != adjacent.x && parent.y != adjacent.y)){
-              // if adjacent is visited and not a parent, then there is a cycle
-              region.num_cycles++;
+            else if(parent != null && !(parent.x == adjacent.x && parent.y == adjacent.y)){
+                //console.log('adjacent is visited');
+                // if adjacent is visited and not a parent, then there is a cycle
+                region.num_cycles++;
             }
         }
 
@@ -139,6 +144,7 @@ class ActiveRegionConstraint extends Constraint {
             size: 0,
             num_cycles: 0
         }
+        //console.log(`getting region starting at (${cur.x}, ${cur.y})`);
 
         this.getRegionRecursive(individual, cur, visited, parent, region);
 

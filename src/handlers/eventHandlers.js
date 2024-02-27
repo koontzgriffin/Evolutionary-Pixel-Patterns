@@ -114,29 +114,30 @@ canvas.addEventListener('mousemove', function(event) {
 });
 
 function handleMouseClick(event) {
-  // Get the position of the canvas
-  const canvasRect = canvas.getBoundingClientRect();
+    let cellSize = canvasWidth/columns;
+    // Get the position of the canvas
+    const canvasRect = canvas.getBoundingClientRect();
 
-  // Calculate the clicked coordinates relative to the canvas
-  const x = event.clientX - canvasRect.left;
-  const y = event.clientY - canvasRect.top;
+    // Calculate the clicked coordinates relative to the canvas
+    const x = event.clientX - canvasRect.left;
+    const y = event.clientY - canvasRect.top;
 
-  // Calculate the row and column based on the click coordinates
-  const col = Math.floor(x / cellSize);
-  const row = Math.floor(y / cellSize);
+    // Calculate the row and column based on the click coordinates
+    const col = Math.floor(x / cellSize);
+    const row = Math.floor(y / cellSize);
 
-  if(prev_cell[0] == col && prev_cell[1] == row){
-    return;
-  }
+    if(prev_cell[0] == col && prev_cell[1] == row){
+        return;
+    }
 
-  prev_cell = [col, row];
+    prev_cell = [col, row];
 
-  // Toggle the cell value (active or deactive)
-  mainGrid.getCell(col, row).toggle();
+    // Toggle the cell value (active or deactive)
+    mainGrid.getCell(col, row).toggle();
 
-  // Clear the canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Redraw the grid with the updated pattern
-  drawGrid(mainGrid, showBorders);
+    // Redraw the grid with the updated pattern
+    drawGrid(mainGrid, showBorders);
 }

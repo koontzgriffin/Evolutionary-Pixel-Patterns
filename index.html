@@ -10,6 +10,7 @@
             display: flex;
             flex-direction: column; /* Change to row for side-by-side layout */
             text-align: center;
+            font-family: "Montserrat", sans-serif;
         }
 
         .flex-container {
@@ -19,7 +20,7 @@
 
         .flex-item {
             flex: 1; /* Equal distribution of space */
-            border: 1px solid #ddd; /* Optional: Add a border for visibility */
+            /*border: 1px solid #ddd; /* Optional: Add a border for visibility */
             padding: 20px;
             box-sizing: border-box;
         }
@@ -33,8 +34,30 @@
             justify-content: center;
         }
 
+        #canvasContainer button {
+            margin-bottom: 2px;
+            background-color: #416980; /* Green background */
+            border: none;
+            color: white; /* White text */
+            padding: 5px 10px; /* Padding */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            border-radius: 8px; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+            font-family: "Montserrat", sans-serif;
+        }
+
+        #canvasContainer button:hover {
+            background-color: #4d7b95; /* Darker green background on hover */
+        }
+
         canvas {
             border: 5px solid #ddd; /* Optional: Add a border to the canvas */
+            width: 100%;
+            height: auto;
         }
 
         .sidePanel {
@@ -46,6 +69,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            border-radius: 20px; /* Adjust border radius to round the corners */
+            box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2); /* Add a drop shadow */
         }
 
         .constraints {
@@ -95,48 +120,133 @@
             }
         }
         .gallery-container {
-            background-color: #dcf6f9;
+            background: linear-gradient(to top, #CDECFE 80%, rgba(205, 236, 254, 0)); /* Use a linear gradient */
+            padding-bottom: 20px; /* Add some padding to ensure the content doesn't overlap with the fading effect */
         }
         .gallery-container h2 {
-            margin-top: 5px;
             margin-bottom: 2px;
+            margin-top: 20px;
+            text-shadow: -2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-family: Kode Mono, monospace;
         }
         .gallery-container p {
             margin-bottom: 2px;
         }
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust the minimum width of each item */
             gap: 20px;
             padding: 20px;
+            place-items: center;
         }
         .gallery-item {
+            display: inline-block; /* Make the container size around the canvas */
+            border-radius: 20px; /* Adjust border radius to round the corners */
             background-color: #ffffff;
             border: 1px solid #ccc;
             padding: 5px;
             text-align: center;
+            align-items: center;
+            box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2); /* Add a drop shadow */
+            width: 100%; /* Scale the item to its maximum width */
+            height: auto; /* Maintain aspect ratio */
+            max-width: 450px;
         }
         .gallery-item h3 {
             padding: 1px;
             margin: 1px;
+            margin-top: 2px;
         }
         .gallery-item p {
             padding: 1px;
             margin: 1px;
         }
+        .gallery-item button {
+            margin-bottom: 10px;
+            background-color: #416980; /* Green background */
+            border: none;
+            color: white; /* White text */
+            padding: 10px 20px; /* Padding */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 8px; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+            font-family: "Montserrat", sans-serif;
+        }
+        .gallery-item button:hover {
+            background-color: #4d7b95;; /* Darker green background on hover */
+        }
         .gallery-item canvas {
-            width: 100%;
-            height: auto;
-            max-width: 350px; /* Limit the maximum width */
-            max-height: 350px; /* Limit the maximum height */
+            max-width: calc(100% - 20px); /* Limit the maximum width with a 10px margin on each side */
+            max-height: auto; /* Limit the maximum height */
+            display: block; /* Ensure canvas behaves like a block element */
             border: 1px solid #000;
+            margin: 0 auto; /* Center the canvas horizontally */
+            margin-top: 10px; /* Add margin on top */
+            margin-bottom: 10px; /* Add margin on bottom */
         }
 
+        /* Hide the default checkbox */
+        .checkbox input {
+            display: none;
+        }
+
+        /* Define the custom checkbox */
+        .checkbox label {
+            display: inline-block;
+            position: relative;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Checkbox border */
+        .checkbox label:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #333; /* Border color */
+            border-radius: 4px; /* Rounded corners */
+        }
+
+        /* Checkbox checkmark */
+        .checkbox label:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 12px;
+            border: solid #333; /* Checkmark color */
+            border-width: 0 2px 2px 0;
+            opacity: 0; /* Initially invisible */
+            transition: opacity 0.3s ease; /* Smooth transition for visibility */
+        }
+
+        /* Show the checkmark when the checkbox is checked */
+        .checkbox input:checked + label:after {
+            opacity: 1;
+        }
+
+
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>Genetic Pattern Generator</title>
 </head>
 <body>
-    <h1>Evolutionary Pixel Patterns</h1>
+    <h1 style="font-family: Kode Mono, monospace; text-shadow: -2px 2px 4px rgba(0, 0, 0, 0.4);">Evolutionary Pixel Patterns</h1>
     <div class="flex-container">
         <div class="flex-item">
             <p><b>Welcome to Evolutionary Pixel Patterns where Art Meets Algorithm! </b></p>
@@ -161,6 +271,17 @@
             <div id="canvasContainer">
                 <canvas id="gridCanvas"></canvas>
                 <br>
+                <div class="errors">
+                    <div id="errorNoSolution" style="color: red; display: none;">
+                        <p id="error">! - No solution was found before max Iterations.</p>
+                    </div>
+                    <div id="generationComplete" style="color: rgb(0, 177, 29); display: none;">
+                        <p id="error">Success! Generated before max Iterations.</p>
+                    </div>
+                    <div id="constraintsCheck" style="color: rgb(179, 0, 255); display: none;">
+                        <p id="constraintsMessage">Constraint Check - </p>
+                    </div>
+                </div>
                 <div>
                     <button onclick="randomHandler()">Random</button>
                     <button onclick="generateHandler()">Generate</button>
@@ -179,18 +300,18 @@
                 <div class="constraints">
                     <h3><u>Constraints:</u></h3>
                     <label for="acyclic-constraint">
-                        <input type="checkbox" id="acyclic-constraint"> <b>Active Regions Constraint</b> - all active regions must be <a href="https://mathworld.wolfram.com/AcyclicGraph.html#:~:text=An%20acyclic%20graph%20is%20a,of%20acyclic%20graphs%20(forests)%20on">acyclic</a>.
+                        <input class="checkbox" type="checkbox" id="acyclic-constraint"> <b>Active Regions Constraint</b> - all active regions must be <a href="https://mathworld.wolfram.com/AcyclicGraph.html#:~:text=An%20acyclic%20graph%20is%20a,of%20acyclic%20graphs%20(forests)%20on">acyclic</a>.
                     </label>
     
                     <label for="inactive-regions-constraint">
-                        <input type="checkbox" id="inactive-regions-constraint"> <b>Restrict Inactive Regions</b> - <a href="InactiveNeighborhoodSelector.html">view and edit allowed neighborhoods</a>
+                        <input class="checkbox" type="checkbox" id="inactive-regions-constraint"> <b>Restrict Inactive Regions</b> - <a href="InactiveNeighborhoodSelector.html">view and edit allowed neighborhoods</a>
                     </label>
                 </div>
                 <div class="parameters">
                     <h3><u>Parameters</u></h2>
 
                     <label for="checkbox3">
-                        <input type="checkbox" id="borderToggle" checked> Show cell borders
+                        <input class="checkbox" type="checkbox" id="borderToggle" checked> Show cell borders
                     </label>
                     
                     <label for="colorPicker">Active Color:
@@ -222,22 +343,11 @@
                     </label>
                 </div>
             </div>
-            <div class="errors">
-                <div id="errorNoSolution" style="color: red; display: none;">
-                    <p id="error">! - Error: No solution was found before max Iterations.</p>
-                </div>
-                <div id="generationComplete" style="color: rgb(0, 177, 29); display: none;">
-                    <p id="error">! - Success: Generation Completed before max Iterations.</p>
-                </div>
-                <div id="constraintsCheck" style="color: rgb(179, 0, 255); display: none;">
-                    <p id="constraintsMessage">Constraint Check - </p>
-                </div>
-            </div>
         </div>
     </div>
     <div class="gallery-container">
         <h2>Gallery</h2>
-        <p>Pattern Creations by our algoritmic artists!</p>
+        <p>Pattern creations by our algoritmic artists!</p>
         <div class="gallery" id="gallery"></div>
     </div>
 
