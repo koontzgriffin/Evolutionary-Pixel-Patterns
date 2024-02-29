@@ -49,7 +49,7 @@ ActiveNeighborhoodsConstraintToggle.addEventListener('change', function() {
 const inactiveToggle = document.getElementById('inactive-regions-constraint');
 
 inactiveToggle.addEventListener('change', function() {
-    if(ActiveNeighborhoodsConstraintToggle.checked){
+    if(inactiveToggle.checked){
         RESTRICT_INACTIVE_NEIGHBORHOODS = true;
     } else {
         RESTRICT_INACTIVE_NEIGHBORHOODS = false;

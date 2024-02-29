@@ -4,7 +4,6 @@ const defaultValidActiveNeighborhoods = [];
 
 // Function to set the "allowedNeighborhoods" cookie
 function setAllowedInactiveNeighborhoodsCookie(neighborhoodsArray, expiryDays = 30) {
-    console.log("setting cookie...");
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + expiryDays);
 
@@ -28,7 +27,6 @@ function getAllowedInactiveNeighborhoodsCookie() {
 
 // Function to set the "allowedNeighborhoods" cookie
 function setAllowedActiveNeighborhoodsCookie(neighborhoodsArray, expiryDays = 30) {
-    console.log("setting cookie...");
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + expiryDays);
 
@@ -38,7 +36,6 @@ function setAllowedActiveNeighborhoodsCookie(neighborhoodsArray, expiryDays = 30
 
 // Function to get the "allowedNeighborhoods" cookie
 function getAllowedActiveNeighborhoodsCookie() {
-    console.log("getting cookie...");
     const cookies = document.cookie.split(';').map(cookie => cookie.trim());
     for (const cookie of cookies) {
         const [name, value] = cookie.split('=');

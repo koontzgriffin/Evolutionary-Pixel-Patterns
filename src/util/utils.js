@@ -47,11 +47,11 @@ function getConstraints(){
     let constraints = []
     if(RESTRICT_ACTIVE_NEIGHBORHOODS){
         let neighborhoods = getAllowedActiveNeighborhoodsCookie();
-        constraints.push(ActiveNeighborhoodsConstraint(neighborhoods));
+        constraints.push(new ActiveNeighborhoodsConstraint(neighborhoods));
     }
     if(RESTRICT_INACTIVE_NEIGHBORHOODS){
         let neighborhoods = getAllowedInactiveNeighborhoodsCookie();
-        constraints.push(ActiveNeighborhoodsConstraint(neighborhoods));
+        constraints.push(new InactiveNeighborhoodsConstraint(neighborhoods));
     }
     if(RESTRICT_ACYCLIC || RESTRICT_SIZE){
         let constraint = new ActiveRegionConstraint(restrict_acyclic=RESTRICT_ACYCLIC);
