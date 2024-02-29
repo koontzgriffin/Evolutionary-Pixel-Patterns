@@ -43,6 +43,7 @@ function createGalleryItem(galleryItem) {
         const clickedGalleryId = canvas.id;
         const clickedItem = galleryItems.find(item => item.patternId === clickedGalleryId);
         console.log(clickedItem.settings);
+        copySettings(clickedItem.settings);
     });
 
     item.appendChild(canvas);
@@ -88,37 +89,37 @@ function drawGalleryCanvas(canvas, galleryItem) {
 }
 
 function copySettings(settings){
+    console.log('copying settings...')
+    // Set grid size
+    COLUMNS = settings.columns;
+    ROWS = settings.rows;
+
+    // Set colors
     ACTIVE_COLOR = settings.activeColor;
     INACTIVE_COLOR = settings.inactiveColor;
-    COLUMNS = settings.columns;
-    ROWS = settings.columns;
-    CROSSOVER_RATE = settings.crossoverRate;
-    MAX_ITERATIONS = settings.maxIterations;
-    MUTATION_RATE = settings.mutationRate;
+
+    // Set genetic algorithm parameters
     POPULATION_SIZE = settings.populationSize;
+    MAX_ITERATIONS = settings.maxIterations;
+    MUTATION_RATE = parseFloat(settings.mutationRate);
+    CROSSOVER_RATE = parseFloat(settings.crossoverRate);
 
-    // set the neighborhood cookies
+    // Set constraints
+    RESTRICT_ACYCLIC = settings.restrictAcyclic;
+    RESTRICT_SIZE = settings.restrictSize;
+    MIN_SIZE = settings.minSize;
+    MAX_SIZE = settings.maxSize;
+    RESTRICT_ACTIVE_NEIGHBORHOODS = settings.restrictActiveNeighborhoods;
+    RESTRICT_INACTIVE_NEIGHBORHOODS = settings.restrictInactiveNeighborhoods;
 
-    // set the constraints
-    let new_constraints = [];
-    for(let constraint of settings.constraints){
-        // add the correct constraints
-        if(constraint == 'Inactive Neighborhoods Constraint'){
-            new_constraints.push(new InactiveNeighborhoodsConstraint(settings.inactiveNeighborhoods));
-        }else if(constraint == 'Active Region Constraint'){
-            // get the parameters for the active region constraint
-            let acyclic = settings.restrictAcyclic;
-            let max = -1;
-            let min = -1;
-            new_constraints.push(new ActiveRegionConstraint());
-        }else if(constraint == 'Active Neighborhoods Constraint'){
-            new_constraints.push(new ActiveNeighborhoodsConstraint(settings.activeNeighborhoods));
-        }
-    }
-    CONSTRAINTS = new_constraints;
+    // Set allowed neighborhoods
+    setAllowedActiveNeighborhoodsCookie(settings.activeNeighborhoods);
+    setAllowedInactiveNeighborhoodsCookie(settings.inactiveNeighborhoods);
 
-    // update the UI
-
+    //sync UI
+    syncUI();
+    drawGrid(MAIN_GRID, SHOW_BORDERS);
+    MAIN_CANVAS.scrollIntoView({ behavior: 'smooth' });
 }
 
 // Populate the gallery when the page loads

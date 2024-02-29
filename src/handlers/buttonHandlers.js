@@ -74,19 +74,22 @@ async function addToGalleryHandler(){
         timestamp: timestamp,
         artistName: artistName, // Add the artistName to the newItem object
         settings: {
+            columns: COLUMNS,
+            rows: ROWS,
             activeColor: ACTIVE_COLOR,
             inactiveColor: INACTIVE_COLOR,
-            columns: COLUMNS,
-            maxIterations: MAX_ITERATIONS,
             populationSize: POPULATION_SIZE,
+            maxIterations: MAX_ITERATIONS,
             mutationRate: MUTATION_RATE.toString(),
             crossoverRate: CROSSOVER_RATE.toString(),
-            restrictAcyclic: false,
-            minSize: -1,
-            maxSize: -1,
-            constraints: CONSTRAINTS.map(constraint => constraint.name),
-            inactiveNeighborhoods: [],
-            activeNeighborhoods: []
+            restrictAcyclic: RESTRICT_ACYCLIC,
+            restrictSize: RESTRICT_SIZE,
+            minSize: MIN_SIZE,
+            maxSize: MAX_SIZE,
+            restrictActiveNeighborhoods: RESTRICT_ACTIVE_NEIGHBORHOODS,
+            restrictInactiveNeighborhoods: RESTRICT_INACTIVE_NEIGHBORHOODS,
+            inactiveNeighborhoods: getAllowedInactiveNeighborhoodsCookie(),
+            activeNeighborhoods: getAllowedActiveNeighborhoodsCookie()
         },
         grid: MAIN_GRID.toArray(),
     };
