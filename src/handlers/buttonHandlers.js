@@ -82,6 +82,9 @@ async function addToGalleryHandler(){
             populationSize: POPULATION_SIZE,
             mutationRate: MUTATION_RATE.toString(),
             crossoverRate: CROSSOVER_RATE.toString(),
+            restrictAcyclic: false,
+            minSize: -1,
+            maxSize: -1,
             constraints: CONSTRAINTS.map(constraint => constraint.name),
             inactiveNeighborhoods: [],
             activeNeighborhoods: []

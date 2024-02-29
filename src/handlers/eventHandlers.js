@@ -61,10 +61,26 @@ restrictActiveRegionSizeToggle.addEventListener('change', function() {
     else {
         // add the new constraint with the correct params
         CONSTRAINTS.push(new ActiveRegionConstraint(restrict_acyclic = false));
+        refreshConstraints(CONSTRAINTS);
     }
     console.log(CONSTRAINTS);
 })
 
+const ActiveNeighborhoodsConstraintToggle = document.getElementById('active-neighborhoods-constraint');
+
+ActiveNeighborhoodsConstraintToggle.addEventListener('change', function() {
+    const index = CONSTRAINTS.findIndex(existingItem => existingItem.name === "Active Neighborhoods Constraint");
+
+    if (index !== -1) {
+        // Item is in the array, remove it
+        CONSTRAINTS.splice(index, 1);
+    } else {
+        // Item is not in the array, add it
+        let vaildActiveNeighborhoods = getAllowedActiveNeighborhoodsCookie();
+        CONSTRAINTS.push(new ActiveNeighborhoodsConstraint(vaildActiveNeighborhoods));
+    }
+    console.log(CONSTRAINTS);
+});
 
 const inactiveToggle = document.getElementById('inactive-regions-constraint');
 

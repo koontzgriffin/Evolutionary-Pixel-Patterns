@@ -7,12 +7,12 @@ function getRandomInt(min, max){
 }
 
 function drawGrid(grid, show_borders) {
-    let cellSize = MAIN_CANVAS.clientWidth/COLUMNS;
+    let cellSize = Math.floor(MAIN_CANVAS.clientWidth/COLUMNS);
+    const actualCanvasWidth = grid.columns * cellSize; // Calculate the actual width needed for the grid
 
     // Set canvas width and height explicitly
-    MAIN_CANVAS.width = MAIN_CANVAS.clientWidth;
+    MAIN_CANVAS.width = actualCanvasWidth;
     MAIN_CANVAS.height = grid.rows * cellSize;
-
 
     MAIN_CTX.clearRect(0, 0, MAIN_CTX.canvas.width, MAIN_CTX.canvas.height);
 
@@ -49,6 +49,9 @@ function refreshConstraints(constraints) {
         if(constraint.name == "Inactive Neighborhoods Constraint"){
             let vaildInactiveNeighborhoods = getAllowedNeighborhoodsCookie();
             constraint.setAllowedNeighborhoods(vaildInactiveNeighborhoods);
+        } else if(constraint.name == "Active Neighborhoods Constraint"){
+            let vaildActiveNeighborhoods = getAllowedActiveNeighborhoodsCookie();
+            constraint.setAllowedNeighborhoods(vaildActiveNeighborhoods);
         }
         else if(constraint.name == "Active Region Constraint"){
             const restrictSize = document.getElementById('restrict-active-region-size')

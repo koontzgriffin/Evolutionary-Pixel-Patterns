@@ -99,6 +99,45 @@ class InactiveNeighborhoodsConstraint extends Constraint {
     }
 }
 
+class ActiveNeighborhoodsConstraint extends Constraint {
+    constructor(allowedNeighborhoods){
+        super();
+        this.allowedNeighborhoods = allowedNeighborhoods;
+        this.name = "Active Neighborhoods Constraint";
+    }
+
+    evaluate(cell, individual) {
+        if(!cell.active){
+            // constraint only relevant for active cells
+            return 0;
+        }
+
+        let neighborhood = individual.getNeighborhoodSeed(cell.x, cell.y);
+
+        for(let allowed of this.allowedNeighborhoods){
+            // compare and if matches any return true
+            //console.log(`comparing ${neighborhood} and ${allowed}`);
+            let valid = true;
+            for(let i = 0; i < allowed.length; i++){
+                if(neighborhood[i] != allowed[i] && neighborhood[i] != 'X'){
+                    valid = false;
+                }
+            }
+            if(valid){
+                // neighborhood is valid
+                return 0;
+            }
+        }
+
+        // neighborhood did not match any allowed neighborhoods
+        return 1;
+    }
+
+    setAllowedNeighborhoods(allowedNeighborhoods){
+        this.allowedNeighborhoods = allowedNeighborhoods;
+    }
+}
+
 class ActiveRegionConstraint extends Constraint {
     constructor(restrict_acyclic = false, min_size = -1, max_size = -1){
         super();

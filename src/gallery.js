@@ -42,7 +42,7 @@ function createGalleryItem(galleryItem) {
     button.addEventListener('click', () => {
         const clickedGalleryId = canvas.id;
         const clickedItem = galleryItems.find(item => item.patternId === clickedGalleryId);
-        console.log(clickedItem);
+        console.log(clickedItem.settings);
     });
 
     item.appendChild(canvas);
@@ -85,6 +85,40 @@ function drawGalleryCanvas(canvas, galleryItem) {
             ctx.fillRect(x, y, cellSize, cellSize);
         }
     }
+}
+
+function copySettings(settings){
+    ACTIVE_COLOR = settings.activeColor;
+    INACTIVE_COLOR = settings.inactiveColor;
+    COLUMNS = settings.columns;
+    ROWS = settings.columns;
+    CROSSOVER_RATE = settings.crossoverRate;
+    MAX_ITERATIONS = settings.maxIterations;
+    MUTATION_RATE = settings.mutationRate;
+    POPULATION_SIZE = settings.populationSize;
+
+    // set the neighborhood cookies
+
+    // set the constraints
+    let new_constraints = [];
+    for(let constraint of settings.constraints){
+        // add the correct constraints
+        if(constraint == 'Inactive Neighborhoods Constraint'){
+            new_constraints.push(new InactiveNeighborhoodsConstraint(settings.inactiveNeighborhoods));
+        }else if(constraint == 'Active Region Constraint'){
+            // get the parameters for the active region constraint
+            let acyclic = settings.restrictAcyclic;
+            let max = -1;
+            let min = -1;
+            new_constraints.push(new ActiveRegionConstraint());
+        }else if(constraint == 'Active Neighborhoods Constraint'){
+            new_constraints.push(new ActiveNeighborhoodsConstraint(settings.activeNeighborhoods));
+        }
+    }
+    CONSTRAINTS = new_constraints;
+
+    // update the UI
+
 }
 
 // Populate the gallery when the page loads
