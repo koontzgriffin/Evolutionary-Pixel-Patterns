@@ -1,7 +1,11 @@
 function geneticAlgorithm(rows, columns, populationSize, maxIterations, constraints, drawGridCallback) {
+    // UI controls
     toggleNoSolutionError(false);
     toggleGenerationComplete(false);
+    document.body.classList.add('loading');
+    toggleGenerating(true);
 
+    // vars
     let population = new Population(rows, columns, populationSize, constraints);
     let currentIteration = 0;
     let goalFound = false;
@@ -25,6 +29,9 @@ function geneticAlgorithm(rows, columns, populationSize, maxIterations, constrai
                         drawGridCallback(offspring, SHOW_BORDERS);
                         MAIN_GRID = offspring;
                         goalFound = true;
+                        // update the UI
+                        document.body.classList.remove('loading');
+                        toggleGenerating(false);
                         changeCount(currentIteration);
                         toggleGenerationComplete(true);
                         return;
@@ -40,6 +47,8 @@ function geneticAlgorithm(rows, columns, populationSize, maxIterations, constrai
             const bestIndividual = population.getBestIndividual();
             toggleNoSolutionError(true);
             changeCount(currentIteration);
+            document.body.classList.remove('loading');
+            toggleGenerating(false);
             drawGridCallback(bestIndividual, SHOW_BORDERS);
             MAIN_GRID = bestIndividual;
             console.log(bestIndividual);

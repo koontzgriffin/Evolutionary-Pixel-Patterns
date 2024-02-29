@@ -26,6 +26,12 @@ function toggleConstraintsCheck(show, num = 0) {
     message.textContent = `! - Constraint Check: there was ${num} conflicts`;
 }
 
+function toggleGenerating(show) {
+    const generatingContainer = document.getElementById('generating');
+    // Set the display property based on the boolean parameter
+    generatingContainer.style.display = show ? 'block' : 'none';
+}
+
 function changeCount(newCount) {
     const iterationElement = document.getElementById('iterationCount');
     // Update the iteration count
