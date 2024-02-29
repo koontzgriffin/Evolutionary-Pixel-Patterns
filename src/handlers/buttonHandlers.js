@@ -27,15 +27,16 @@ function checkConstraintsHandler(){
     let cellSize = MAIN_CANVAS.width/COLUMNS;
     let num_conflicts = 0;
     console.log("checking constraints...")
-    refreshConstraints(CONSTRAINTS);
-    for(let constraint of CONSTRAINTS){
+    let constraints =  getConstraints();
+
+    for(let constraint of constraints){
         constraint.reset();
     }
 
     for(let y = 0; y < ROWS; y++){
         for(let x = 0; x < COLUMNS; x++){
             // run each constraint on each cell
-            for(let constraint of CONSTRAINTS){
+            for(let constraint of constraints){
                 let deduction = constraint.evaluate(MAIN_GRID.getCell(x, y), MAIN_GRID);
                 num_conflicts += deduction;
                 if(deduction > 0){
@@ -52,11 +53,9 @@ function checkConstraintsHandler(){
 
 function generateHandler(){
     console.log("generating with genetic algorithm...");
-    //vaildInactiveNeighborhoods = getAllowedNeighborhoodsCookie();
-    const result = geneticAlgorithm(ROWS, COLUMNS, POPULATION_SIZE, MAX_ITERATIONS, CONSTRAINTS, drawGrid);
-    //mainGrid = result;
-    //drawGrid(mainGrid, showBorders);
-    //console.log("Generate Complete.")
+    let constraints = getConstraints();
+
+    const result = geneticAlgorithm(ROWS, COLUMNS, POPULATION_SIZE, MAX_ITERATIONS, constraints, drawGrid);
 }
 
 function mutateHandler(){

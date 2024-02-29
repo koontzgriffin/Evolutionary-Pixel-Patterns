@@ -2,6 +2,7 @@
 // Globals //
 /////////////
 
+// main grid/canvas params
 let COLUMNS = 10;
 let ROWS = 10;
 
@@ -13,22 +14,27 @@ let SHOW_BORDERS = true;
 const MAIN_CANVAS = document.getElementById('gridCanvas');
 const MAIN_CTX = MAIN_CANVAS.getContext('2d');
 
-// constraint parameters
-VALID_INACTIVE_NEIGHBORHOODS = getAllowedNeighborhoodsCookie();
-
-// genetic algo params
-
+// genetic algo parameters
 let POPULATION_SIZE = 800;
 let MAX_ITERATIONS = 50;
 let MUTATION_RATE = 0.01;
 let CROSSOVER_RATE = 0.80;
-let CONSTRAINTS = [];
+
+// constraint parameters
+let RESTRICT_ACYCLIC = false;
+let RESTRICT_SIZE = false;
+let MIN_SIZE = 1;
+let MAX_SIZE = 10;
+let RESTRICT_ACTIVE_NEIGHBORHOODS = false;
+let RESTRICT_INACTIVE_NEIGHBORHOODS = false;
+
 
 ////////////////////////
 // RUN TIME ////////////
 ////////////////////////
 
-let MAIN_GRID = new Individual(ROWS, COLUMNS, CONSTRAINTS);
+let MAIN_GRID = new Individual(ROWS, COLUMNS);
 console.log(MAIN_GRID);
+syncUI();
 
 drawGrid(MAIN_GRID, SHOW_BORDERS);

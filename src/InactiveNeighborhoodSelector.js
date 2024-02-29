@@ -1,6 +1,6 @@
 const CANVAS_SIZE = 100;
 
-let vaildNeighborhoods = getAllowedNeighborhoodsCookie();
+let vaildNeighborhoods = getAllowedInactiveNeighborhoodsCookie();
 
 function intToBinaryString(number) {
     // Ensure the number is within the 9-bit range
@@ -88,7 +88,7 @@ function createCanvas(seed) {
     // Add click event listener to each div
     canvasDiv.addEventListener('click', function () {
         addNeighborhood(canvasDiv.id);
-        setAllowedNeighborhoodsCookie(vaildNeighborhoods);
+        setAllowedInactiveNeighborhoodsCookie(vaildNeighborhoods);
     });
 
 }
@@ -105,13 +105,13 @@ function drawNeighborhoods(){
 
 function clearHandler(){
     vaildNeighborhoods = [];
-    setAllowedNeighborhoodsCookie(vaildNeighborhoods);
+    setAllowedInactiveNeighborhoodsCookie(vaildNeighborhoods);
     location.reload(true);
 }
 
 function resetHandler(){
     vaildNeighborhoods = defaultValidInactiveNeighborhoods;
-    setAllowedNeighborhoodsCookie(vaildNeighborhoods);
+    setAllowedInactiveNeighborhoodsCookie(vaildNeighborhoods);
     location.reload(true);
 }
 

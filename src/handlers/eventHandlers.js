@@ -19,83 +19,53 @@ colorPickerInactive.addEventListener('input', function() {
 const acyclicToggle = document.getElementById('acyclic-constraint');
 
 acyclicToggle.addEventListener('change', function() {
-    const index = CONSTRAINTS.findIndex(existingItem => existingItem.name === "Active Region Constraint");
-
-    if(acyclicToggle.checked && index !== -1){
-        // Enabled and in the Constraints Array, update the constraints
-        refreshConstraints(CONSTRAINTS);
+    if(acyclicToggle.checked){
+        RESTRICT_ACYCLIC = true;
+    } else {
+        RESTRICT_ACYCLIC = false;
     }
-    else if(!acyclicToggle.checked && index !== -1){
-        // Disabled and in the Constraints Array
-        // check if other field is checked, if not remove the constraint
-        const restrictActiveRegionSizeToggle = document.getElementById('restrict-active-region-size');
-        if(!restrictActiveRegionSizeToggle.checked){
-            CONSTRAINTS.splice(index, 1);
-        }
-    }
-    else {
-        // add the new constraint with the correct params
-        CONSTRAINTS.push(new ActiveRegionConstraint(restrict_acyclic = true));
-    }
-    console.log(CONSTRAINTS);
 });
 
 const restrictActiveRegionSizeToggle = document.getElementById('restrict-active-region-size');
 
 restrictActiveRegionSizeToggle.addEventListener('change', function() {
-    const index = CONSTRAINTS.findIndex(existingItem => existingItem.name === "Active Region Constraint");
-
-    if(restrictActiveRegionSizeToggle.checked && index !== -1){
-        // Enabled and in the Constraints Array, update the constraints
-        refreshConstraints(CONSTRAINTS);
+    if(restrictActiveRegionSizeToggle.checked){
+        RESTRICT_SIZE = true;
+    } else {
+        RESTRICT_SIZE = false;
     }
-    else if(!restrictActiveRegionSizeToggle.checked && index !== -1){
-        // Disabled and in the Constraints Array
-        // check if other field is checked, if not remove the constraint
-        const acyclicToggle = document.getElementById('acyclic-constraint');
-        if(!acyclicToggle.checked){
-            CONSTRAINTS.splice(index, 1);
-        }
-        refreshConstraints(CONSTRAINTS);
-    }
-    else {
-        // add the new constraint with the correct params
-        CONSTRAINTS.push(new ActiveRegionConstraint(restrict_acyclic = false));
-        refreshConstraints(CONSTRAINTS);
-    }
-    console.log(CONSTRAINTS);
 })
 
 const ActiveNeighborhoodsConstraintToggle = document.getElementById('active-neighborhoods-constraint');
 
 ActiveNeighborhoodsConstraintToggle.addEventListener('change', function() {
-    const index = CONSTRAINTS.findIndex(existingItem => existingItem.name === "Active Neighborhoods Constraint");
-
-    if (index !== -1) {
-        // Item is in the array, remove it
-        CONSTRAINTS.splice(index, 1);
+    if(ActiveNeighborhoodsConstraintToggle.checked){
+        RESTRICT_ACTIVE_NEIGHBORHOODS = true;
     } else {
-        // Item is not in the array, add it
-        let vaildActiveNeighborhoods = getAllowedActiveNeighborhoodsCookie();
-        CONSTRAINTS.push(new ActiveNeighborhoodsConstraint(vaildActiveNeighborhoods));
+        RESTRICT_ACTIVE_NEIGHBORHOODS = false;
     }
-    console.log(CONSTRAINTS);
 });
 
 const inactiveToggle = document.getElementById('inactive-regions-constraint');
 
 inactiveToggle.addEventListener('change', function() {
-    const index = CONSTRAINTS.findIndex(existingItem => existingItem.name === "Inactive Neighborhoods Constraint");
-
-    if (index !== -1) {
-        // Item is in the array, remove it
-        CONSTRAINTS.splice(index, 1);
+    if(ActiveNeighborhoodsConstraintToggle.checked){
+        RESTRICT_INACTIVE_NEIGHBORHOODS = true;
     } else {
-        // Item is not in the array, add it
-        let vaildInactiveNeighborhoods = getAllowedNeighborhoodsCookie();
-        CONSTRAINTS.push(new InactiveNeighborhoodsConstraint(vaildInactiveNeighborhoods));
+        RESTRICT_INACTIVE_NEIGHBORHOODS = false;
     }
-    console.log(CONSTRAINTS);
+});
+
+const maxSize = document.getElementById('active-region-max');
+
+maxSize.addEventListener('input', function(){
+    MAX_SIZE = parseInt(this.value, 10);
+});
+
+const minSize = document.getElementById('active-region-min');
+
+minSize.addEventListener('input', function(){
+    MIN_SIZE = parseInt(this.value, 10);
 });
 
 // border toggle

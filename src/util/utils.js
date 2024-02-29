@@ -43,34 +43,49 @@ function shuffleArray(array) {
     return array;
 }
 
-function refreshConstraints(constraints) {
-    console.log('refreshing constraints...')
-    for(let constraint of constraints){
-        if(constraint.name == "Inactive Neighborhoods Constraint"){
-            let vaildInactiveNeighborhoods = getAllowedNeighborhoodsCookie();
-            constraint.setAllowedNeighborhoods(vaildInactiveNeighborhoods);
-        } else if(constraint.name == "Active Neighborhoods Constraint"){
-            let vaildActiveNeighborhoods = getAllowedActiveNeighborhoodsCookie();
-            constraint.setAllowedNeighborhoods(vaildActiveNeighborhoods);
-        }
-        else if(constraint.name == "Active Region Constraint"){
-            const restrictSize = document.getElementById('restrict-active-region-size')
-
-            if(restrictSize.checked){
-                const minInput = document.getElementById('active-region-min');
-                const maxInput = document.getElementById('active-region-max');
-
-                // Convert the input values to integers
-                const min = parseInt(minInput.value);
-                const max = parseInt(maxInput.value);
-
-                constraint.min_size = min;
-                constraint.max_size = max;
-            }
-            else{
-                constraint.min_size = -1;
-                constraint.max_size = -1;
-            }
-        }
+function getConstraints(){
+    let constraints = []
+    if(RESTRICT_ACTIVE_NEIGHBORHOODS){
+        let neighborhoods = getAllowedActiveNeighborhoodsCookie();
+        constraints.push(ActiveNeighborhoodsConstraint(neighborhoods));
     }
+    if(RESTRICT_INACTIVE_NEIGHBORHOODS){
+        let neighborhoods = getAllowedInactiveNeighborhoodsCookie();
+        constraints.push(ActiveNeighborhoodsConstraint(neighborhoods));
+    }
+    if(RESTRICT_ACYCLIC || RESTRICT_SIZE){
+        let constraint = new ActiveRegionConstraint(restrict_acyclic=RESTRICT_ACYCLIC);
+        if(RESTRICT_SIZE){
+            constraint.min_size = MIN_SIZE;
+            constraint.max_size = MAX_SIZE;
+        }
+        constraints.push(constraint);
+    }
+    return constraints;
+}
+
+function syncUI(){
+    document.getElementById('columns').value = COLUMNS;
+
+    // Sync colors
+    document.getElementById('colorPickerActive').value = ACTIVE_COLOR;
+    document.getElementById('colorPickerInactive').value = INACTIVE_COLOR;
+
+    // Sync show borders checkbox
+    document.getElementById('borderToggle').checked = SHOW_BORDERS;
+
+    // Sync genetic algorithm parameters
+    document.getElementById('populationSize').value = POPULATION_SIZE;
+    document.getElementById('maxIterations').value = MAX_ITERATIONS;
+    document.getElementById('mutationRate').value = MUTATION_RATE;
+    document.getElementById('crossoverRate').value = CROSSOVER_RATE;
+
+    document.getElementById('inactive-regions-constraint').checked = RESTRICT_INACTIVE_NEIGHBORHOODS;
+    document.getElementById('active-neighborhoods-constraint').checked = RESTRICT_ACTIVE_NEIGHBORHOODS;
+
+    document.getElementById('acyclic-constraint').checked = RESTRICT_ACYCLIC;
+    document.getElementById('restrict-active-region-size').checked = RESTRICT_SIZE;
+
+    document.getElementById('active-region-min').value = MIN_SIZE;
+    document.getElementById('active-region-max').value = MAX_SIZE;
 }

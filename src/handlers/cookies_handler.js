@@ -3,22 +3,22 @@ const defaultValidInactiveNeighborhoods  = ['000101000', '000101001', '000101100
 const defaultValidActiveNeighborhoods = [];
 
 // Function to set the "allowedNeighborhoods" cookie
-function setAllowedNeighborhoodsCookie(neighborhoodsArray, expiryDays = 30) {
+function setAllowedInactiveNeighborhoodsCookie(neighborhoodsArray, expiryDays = 30) {
     console.log("setting cookie...");
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + expiryDays);
 
     const encodedNeighborhoods = encodeURIComponent(JSON.stringify(neighborhoodsArray));
-    document.cookie = `allowedNeighborhoods=${encodedNeighborhoods}; expires=${expiryDate.toUTCString()}; path=/`;
+    document.cookie = `allowedInactiveNeighborhoods=${encodedNeighborhoods}; expires=${expiryDate.toUTCString()}; path=/`;
 }
 
 // Function to get the "allowedNeighborhoods" cookie
-function getAllowedNeighborhoodsCookie() {
+function getAllowedInactiveNeighborhoodsCookie() {
     console.log("getting cookie...");
     const cookies = document.cookie.split(';').map(cookie => cookie.trim());
     for (const cookie of cookies) {
         const [name, value] = cookie.split('=');
-        if (name === 'allowedNeighborhoods') {
+        if (name === 'allowedInactiveNeighborhoods') {
             return JSON.parse(decodeURIComponent(value));
         }
     }
