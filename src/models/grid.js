@@ -38,7 +38,7 @@ class Grid {
 
     getCell(x, y) {
         // Get a specific cell from the grid
-        if (x < columns && x >= 0 && y < rows && y >= 0){
+        if (x < this.columns && x >= 0 && y < this.rows && y >= 0){
             // if cordnates are valid
             return this.grid[x][y];
         }

@@ -93,13 +93,17 @@ class InactiveNeighborhoodsConstraint extends Constraint {
         // neighborhood did not match any allowed neighborhoods
         return 1;
     }
+
+    setAllowedNeighborhoods(allowedNeighborhoods){
+        this.allowedNeighborhoods = allowedNeighborhoods;
+    }
 }
 
 class ActiveRegionConstraint extends Constraint {
     constructor(){
         super();
         this.name = "Active Region Constraint";
-        this.visited_global = Array.from({ length: columns }, () => Array(rows).fill(false));
+        this.visited_global = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(false));
     }
 
     evaluate(cell, individual){
@@ -152,7 +156,7 @@ class ActiveRegionConstraint extends Constraint {
     }
 
     reset(){
-        this.visited_global = Array.from({ length: columns }, () => Array(rows).fill(false));
+        this.visited_global = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(false));
     }
 }
 

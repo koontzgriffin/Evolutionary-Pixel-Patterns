@@ -18,13 +18,13 @@ class Individual extends Grid {
         this.fitness = 0; // set fitness to zero and subtract for conflicts
 
         // reset all constraints
-        for(let constraint of constraints){
+        for(let constraint of this.constraints){
             constraint.reset();
         }
 
         // iterate through all cells
-        for(let y = 0; y < rows; y++){
-            for(let x = 0; x < columns; x++){
+        for(let y = 0; y < this.rows; y++){
+            for(let x = 0; x < this.columns; x++){
                 // run each constraint on each cell
                 for(let constraint of this.constraints){
                     // subtract the constraint return
@@ -37,7 +37,7 @@ class Individual extends Grid {
     reproduce(mate, rate){
         // return early based on mutation rate
         if(Math.random() > rate){ 
-            const child = new Individual(this.rows, this.columns, constraints);
+            const child = new Individual(this.rows, this.columns, this.constraints);
             
             child.fillFromArray(this.grid.flat());
             // mutate the child
@@ -58,7 +58,7 @@ class Individual extends Grid {
 
     splitCrossover(mate){
         // produces a child from the current individual and another.
-        const child = new Individual(this.rows, this.columns, constraints);
+        const child = new Individual(this.rows, this.columns, this.constraints);
 
         // random split
         const split = getRandomInt(0, this.rows * this.columns);
