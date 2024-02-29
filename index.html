@@ -13,6 +13,11 @@
             font-family: "Montserrat", sans-serif;
         }
 
+        .indent {
+            margin-top: 5px;
+            margin-left: 30px; /* Adjust the indentation as needed */
+        }
+
         .flex-container {
             display: flex;
             flex-direction: row;
@@ -299,12 +304,29 @@
                 <h2>Settings</h2>
                 <div class="constraints">
                     <h3><u>Constraints:</u></h3>
-                    <label for="acyclic-constraint">
-                        <input class="checkbox" type="checkbox" id="acyclic-constraint"> <b>Active Regions Constraint</b> - all active regions must be <a href="https://mathworld.wolfram.com/AcyclicGraph.html#:~:text=An%20acyclic%20graph%20is%20a,of%20acyclic%20graphs%20(forests)%20on">acyclic</a>.
+                        <label for="acyclic-constraint">
+                            <b>Active Regions Constraint:</b>
+                            <div class="indent">
+                                <input class="checkbox" type="checkbox" id="acyclic-constraint"> <b>Acyclic</b> - all active regions must be <a href="https://mathworld.wolfram.com/AcyclicGraph.html#:~:text=An%20acyclic%20graph%20is%20a,of%20acyclic%20graphs%20(forests)%20on">acyclic</a>.
+                            </div>
+                            <div class="indent">
+                                <input class="checkbox" type="checkbox" id="restrict-active-region-size"> <b>Restrict Size</b> - limit the size of active regions.
+                                <div class="indent">
+                                    <label for="Min">Min: 
+                                        <input type="number" id="active-region-min" name="" value="10" min="1" max="30">
+                                    </label>
+                                    <label for="Max">Max: 
+                                        <input type="number" id="active-region-max" name="" value="10" min="1" max="30">
+                                    </label>
+                                </div>
+                               
+                            </div>
+                        </label>
+                    <label for="active-neighborhoods-constraint">
+                        <input class="checkbox" type="checkbox" id="active-neighborhoods-constraint"> <b>Restrict Active Neighborhoods</b> - <a href="InactiveNeighborhoodSelector.html">view and edit allowed neighborhoods</a>
                     </label>
-    
                     <label for="inactive-regions-constraint">
-                        <input class="checkbox" type="checkbox" id="inactive-regions-constraint"> <b>Restrict Inactive Regions</b> - <a href="InactiveNeighborhoodSelector.html">view and edit allowed neighborhoods</a>
+                        <input class="checkbox" type="checkbox" id="inactive-regions-constraint"> <b>Restrict Inactive Neighborhoods</b> - <a href="InactiveNeighborhoodSelector.html">view and edit allowed neighborhoods</a>
                     </label>
                 </div>
                 <div class="parameters">

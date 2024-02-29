@@ -44,12 +44,30 @@ function shuffleArray(array) {
 }
 
 function refreshConstraints(constraints) {
+    console.log('refreshing constraints...')
     for(let constraint of constraints){
-        if(constraint.name =  "Inactive Neighborhoods Constraint"){
+        if(constraint.name == "Inactive Neighborhoods Constraint"){
             let vaildInactiveNeighborhoods = getAllowedNeighborhoodsCookie();
             constraint.setAllowedNeighborhoods(vaildInactiveNeighborhoods);
         }
-        else if(constraint.name = "Active Region Constraint"){
+        else if(constraint.name == "Active Region Constraint"){
+            const restrictSize = document.getElementById('restrict-active-region-size')
+
+            if(restrictSize.checked){
+                const minInput = document.getElementById('active-region-min');
+                const maxInput = document.getElementById('active-region-max');
+
+                // Convert the input values to integers
+                const min = parseInt(minInput.value);
+                const max = parseInt(maxInput.value);
+
+                constraint.min_size = min;
+                constraint.max_size = max;
+            }
+            else{
+                constraint.min_size = -1;
+                constraint.max_size = -1;
+            }
         }
     }
 }

@@ -21,15 +21,50 @@ const acyclicToggle = document.getElementById('acyclic-constraint');
 acyclicToggle.addEventListener('change', function() {
     const index = CONSTRAINTS.findIndex(existingItem => existingItem.name === "Active Region Constraint");
 
-    if (index !== -1) {
-        // Item is in the array, remove it
-        CONSTRAINTS.splice(index, 1);
-    } else {
-        // Item is not in the array, add it
-        CONSTRAINTS.push(new ActiveRegionConstraint());
+    if(acyclicToggle.checked && index !== -1){
+        // Enabled and in the Constraints Array, update the constraints
+        refreshConstraints(CONSTRAINTS);
+    }
+    else if(!acyclicToggle.checked && index !== -1){
+        // Disabled and in the Constraints Array
+        // check if other field is checked, if not remove the constraint
+        const restrictActiveRegionSizeToggle = document.getElementById('restrict-active-region-size');
+        if(!restrictActiveRegionSizeToggle.checked){
+            CONSTRAINTS.splice(index, 1);
+        }
+    }
+    else {
+        // add the new constraint with the correct params
+        CONSTRAINTS.push(new ActiveRegionConstraint(restrict_acyclic = true));
     }
     console.log(CONSTRAINTS);
 });
+
+const restrictActiveRegionSizeToggle = document.getElementById('restrict-active-region-size');
+
+restrictActiveRegionSizeToggle.addEventListener('change', function() {
+    const index = CONSTRAINTS.findIndex(existingItem => existingItem.name === "Active Region Constraint");
+
+    if(restrictActiveRegionSizeToggle.checked && index !== -1){
+        // Enabled and in the Constraints Array, update the constraints
+        refreshConstraints(CONSTRAINTS);
+    }
+    else if(!restrictActiveRegionSizeToggle.checked && index !== -1){
+        // Disabled and in the Constraints Array
+        // check if other field is checked, if not remove the constraint
+        const acyclicToggle = document.getElementById('acyclic-constraint');
+        if(!acyclicToggle.checked){
+            CONSTRAINTS.splice(index, 1);
+        }
+        refreshConstraints(CONSTRAINTS);
+    }
+    else {
+        // add the new constraint with the correct params
+        CONSTRAINTS.push(new ActiveRegionConstraint(restrict_acyclic = false));
+    }
+    console.log(CONSTRAINTS);
+})
+
 
 const inactiveToggle = document.getElementById('inactive-regions-constraint');
 
