@@ -1,8 +1,15 @@
 import boto3
 import base64
 import json
+from decimal import Decimal
 
 print('Loading function')
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return str(o)
+        return super(DecimalEncoder, self).default(o)
 
 def lambda_handler(event, context):
     print(event)
@@ -15,9 +22,11 @@ def lambda_handler(event, context):
         # Get all items from the DB
         print('Processing GET request...')
         response = table.scan()
+        # Convert Decimal objects to string
+        serialized_items = json.dumps(response['Items'], cls=DecimalEncoder)
         return {
             'statusCode': 200,
-            'body': json.dumps(response['Items']),
+            'body': serialized_items,
             'headers': {
                 'Content-Type': 'application/json'
             }
