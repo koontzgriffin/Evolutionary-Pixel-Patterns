@@ -46,6 +46,8 @@ function changeColor(divId, color){
     const canvas = clickedDiv.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     drawGrid(ctx, parseInt(divId), color);
+    // Update the border color attribute of the canvas
+    canvas.style.borderColor = color;
 }
 
 function addNeighborhood(divId) {

@@ -50,7 +50,7 @@ class Population {
         const sortedIndividuals = this.individuals.slice().sort((a, b) => a.fitness - b.fitness);
     
         // Calculate the index corresponding to the top 10% (adjust as needed)
-        const top10PercentIndex = Math.floor(0.7 * this.individuals.length);
+        const top10PercentIndex = Math.floor(0.6 * this.individuals.length);
     
         // Calculate total fitness for the top 10%
         let totalTopFitness = 0;

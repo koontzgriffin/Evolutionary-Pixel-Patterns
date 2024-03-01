@@ -3,27 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <title>Inactive Neighborhood Selector</title>
   <style>
     body {
       display: block;
       align-items: center;
+      text-align: center;
+      font-family: "Montserrat", sans-serif;
     }
 
     canvas {
       border: 1px solid #ccc;
       margin: 10px;
     }
+
+    .neighborhoods {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center; /* Horizontally center the grid */
+      align-items: center; /* Vertically center the grid */
+    }
+
+    button {
+      margin-bottom: 2px;
+      background-color: #416980; /* Green background */
+      border: none;
+      color: white; /* White text */
+      padding: 5px 10px; /* Padding */
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 12px;
+      border-radius: 8px; /* Rounded corners */
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+      font-family: "Montserrat", sans-serif;
+    }
+
+    button:hover {
+      background-color: #4d7b95; /* Darker green background on hover */
+    }
+
   </style>
 </head>
 <body>
 <div style="text-align: center; width: 100%;">
-   <h1>Inactive Neighborhood Selector</h1>
+   <h1 style="font-family: Kode Mono, monospace; text-shadow: -2px 2px 4px rgba(0, 0, 0, 0.4);">Inactive Neighborhood Selector</h1>
     <p>Edit the allowed neighborhoods by selecting grids. (blue neighborhoods are allowed) <a href="index.html">RETURN TO GENERATOR</a></p>
     <button onclick="resetHandler()">Reset</button>
     <button onclick="clearHandler()">Clear</button>
 </div>
-<div id="neighborhoods" style="display: flex; flex-wrap: wrap;">
+<div id="neighborhoods" class="neighborhoods" style="display: flex; flex-wrap: wrap;">
 </div>
 
 <script src="./src/handlers/cookies_handler.js"></script>
