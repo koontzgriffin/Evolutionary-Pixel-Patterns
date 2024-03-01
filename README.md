@@ -45,6 +45,11 @@ Below are some examples of pixel patterns generated using this project:
 
 ![Example 2](images/example2.png)
 
+![Example 3](images/example3.png)
+
+![Example 4](images/example4.png)
+
+
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to this project, feel free to fork the repository and submit a pull request. Adding new constraints, could lead to generating more interesting patterns!
@@ -55,4 +60,6 @@ some ideas: tesalation constraint, symmetry constraint, force cyclic constraint.
 
 ## Acknowledgements
 
-Special thanks to [OpenAI](https://openai.com) for their amazing language models that assist in the development process.
+- My School notebook doodles for inspiring this project.
+
+- An interesting paper that takes this idea further - [Generating art tile patterns using genetic algorithm](https://ieeexplore.ieee.org/document/7391652)
